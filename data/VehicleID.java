@@ -10,8 +10,8 @@ final public class VehicleID {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("L'identificador del vehicle no pot ser nul o buit.");
         }
-        if (!id.matches("VH[0-9]{6}")) {
-            throw new IllegalArgumentException("L'identificador del vehicle ha de seguir el patró 'VHxxxxxx' (6 dígits).");
+        if (!id.matches("VH[0-9]{5}")) {
+            throw new IllegalArgumentException("L'identificador del vehicle ha de seguir el patró 'VHxxxxx' (5 dígits).");
         }
         this.id = id;
     }

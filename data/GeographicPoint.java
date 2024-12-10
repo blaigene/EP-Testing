@@ -7,8 +7,14 @@ final public class GeographicPoint {
     private final float latitude;
     private final float longitude;
     public GeographicPoint (float lat, float lon) {
-    this.latitude = lat;
-    this.longitude = lon;
+        if (lat < -90 || lat > 90) {
+            throw new IllegalArgumentException("La latitud ha d'estar entre -90 i 90 graus.");
+        }
+        if (lon < -180 || lon > 180) {
+            throw new IllegalArgumentException("La longitud ha d'estar entre -180 i 180 graus.");
+        }
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     public float getLatitude () { return latitude; }
@@ -26,16 +32,16 @@ final public class GeographicPoint {
 
     @Override
     public int hashCode () {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + Float.floatToIntBits(latitude);
-    result = prime * result + Float.floatToIntBits(longitude);
-    return result;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Float.floatToIntBits(latitude);
+        result = prime * result + Float.floatToIntBits(longitude);
+        return result;
     }
 
     @Override
     public String toString () {
-    return "Geographic point {" + "latitude='" + latitude + '\'' +
-    "longitude='" + longitude + '}';
+        return "Geographic point {" + "latitude='" + latitude + '\'' +
+        ",longitude='" + longitude + '\'' +'}';
     }
 }
