@@ -1,5 +1,7 @@
 package services;
 //External services involved in the shared micromobility system
+// TREURE HASHMAP
+// FER DOBLES O MÉS SIMPLE POSSIBLE
 import data.GeographicPoint;
 import data.StationID;
 import data.UserAccount;
