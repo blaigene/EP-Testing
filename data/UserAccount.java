@@ -7,9 +7,11 @@ final public class UserAccount {
     private final String username;
 
     public UserAccount(String username) {
+        // CANVIAR EXCEPCIÓ
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("El nom d'usuari no pot ser nul o buit.");
         }
+        // DEFINIR 15 CARÀCTERS
         if (!username.matches("[a-zA-Z0-9._-]{3,15}")) {
             throw new IllegalArgumentException("El nom d'usuari ha de tenir entre 3 i 15 caràcters (lletres, números, '.', '-', '_').");
         }

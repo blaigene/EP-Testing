@@ -1,3 +1,6 @@
+// FER SUBPAQUET EXCPECIONS, FERLES NOT THROWABLE
+// SEPRARAR PER CLASSES
+
 package data;
 /**
 * Essential data classes

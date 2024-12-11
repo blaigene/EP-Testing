@@ -8,8 +8,10 @@ final public class StationID {
 
     public StationID(String id) {
         if (id == null || id.trim().isEmpty()) {
+            // CANVIAR EXCEPCIÓ A INVENTADA. PACKAGE EXCPECTION
             throw new IllegalArgumentException("L'identificador de l'estació no pot ser nul o buit.");
         }
+        // AUGMENTAR DÍGITS
         if (!id.matches("ST[0-9]{5}")) {
             throw new IllegalArgumentException("L'identificador de l'estació ha de seguir el patró 'STxxxxx' (5 dígits).");
         }
