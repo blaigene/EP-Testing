@@ -1,5 +1,5 @@
 package test.dataTest;
-import data.*;
+import data.mocks.GeographicPoint;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,6 +1,6 @@
 package test.dataTest;
-import data.*;
 import data.exceptions.NullArgumentException;
+import data.mocks.StationID;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

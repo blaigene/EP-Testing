@@ -1,6 +1,4 @@
-package data;
-
-import data.exceptions.NullArgumentException;
+package data.mocks;
 
 /**
 * Essential data classes

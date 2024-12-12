@@ -1,4 +1,4 @@
-package data;
+package data.mocks;
 import data.exceptions.NullArgumentException;
 
 /**
