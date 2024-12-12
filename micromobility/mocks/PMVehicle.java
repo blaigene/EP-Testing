@@ -17,8 +17,7 @@ public class PMVehicle {
     private BufferedImage qrCode;
     private String driverUsername;
     private String stationID;
-
-
+    
     public PMVehicle(String id, GeographicPoint location, String sensorsData, double chargeLevel, BufferedImage qrCode, String username, String stationID) {
         if (id == null || location == null || sensorsData == null || qrCode == null || username == null || stationID == null
         || id.trim().isEmpty() || sensorsData.trim().isEmpty() || username.trim().isEmpty() || stationID.trim().isEmpty()) {
@@ -33,7 +32,7 @@ public class PMVehicle {
         if (chargeLevel < 0 || chargeLevel > 100) {
             throw new IncorrectChargeLevel("Nivell de càrrega ha de ser entre 0 i 100");
         }
-        if (!driverUsername.matches("[a-zA-Z0-9._-]{15}")) {
+        if (!username.matches("[a-zA-Z0-9._-]{15}")) {
             throw new IllegalArgumentException("El nom d'usuari ha de tenir 15 caràcters (lletres, números, '.', '-', '_').");
         }
         if (!stationID.matches("ST[0-9]{6}")) {

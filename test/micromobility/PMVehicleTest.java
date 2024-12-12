@@ -1,6 +1,7 @@
 package test.micromobility;
 
 import data.mocks.*;
+import micromobility.exceptions.*;
 import micromobility.mocks.*;
 import org.junit.jupiter.api.*;
 import java.awt.image.BufferedImage;
@@ -48,6 +49,41 @@ public class PMVehicleTest {
         assertEquals(sampleQrCode, PMVehicle.getQrCode());
         assertEquals("BlaiGene0123456", PMVehicle.getDriverUsername());
         assertEquals("ST012345", PMVehicle.getStationID());
+    }
+
+    @Test
+    void testNullArgumentException() {
+        // NullArgumentException: paràmetres nuls o buits
+        assertThrows(NullArgumentException.class, () -> new PMVehicle(null, sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+        assertThrows(NullArgumentException.class, () -> new PMVehicle("PMV012345", null, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+        assertThrows(NullArgumentException.class, () -> new PMVehicle("PMV012345", sampleLocation, null, 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+        assertThrows(NullArgumentException.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, null, "BlaiGene0123456", "ST012345"));
+        assertThrows(NullArgumentException.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, null, "ST012345"));
+        assertThrows(NullArgumentException.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", null));
+        assertThrows(NullArgumentException.class, () -> new PMVehicle("PMV012345", sampleLocation, "   ", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+    }
+
+    @Test
+    void testIllegalArgumentException() {
+        // IllegalArgumentException: id, stationID, driverUsername amb format incorrecte
+        assertThrows(IllegalArgumentException.class, () -> new PMVehicle("PM12345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+        assertThrows(IllegalArgumentException.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST12345"));
+        assertThrows(IllegalArgumentException.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "Blai_Gene", "ST012345"));
+        assertThrows(IllegalArgumentException.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456789", "ST012345"));
+        assertDoesNotThrow(() -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+    }
+
+    @Test
+    void testClassCastException() {
+        // ClassCastException: location no és una instància de GeographicPoint
+        assertThrows(ClassCastException.class, () -> new PMVehicle("PMV012345", (GeographicPoint) new Object(), "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+    }
+
+    @Test
+    void testIncorrectChargeLevel() {
+        // IncorrectChargeLevel: nivell de càrrega fora de rang
+        assertThrows(IncorrectChargeLevel.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", -1, sampleQrCode, "BlaiGene0123456", "ST012345"));
+        assertThrows(IncorrectChargeLevel.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 101, sampleQrCode, "BlaiGene0123456", "ST012345"));
     }
 
     @Test
