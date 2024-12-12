@@ -8,6 +8,7 @@ final public class VehicleID {
     private final String id;
 
     public VehicleID(String id) {
+        // TOCAR LO MATEIX QUE A STATION
         if (id == null || id.trim().isEmpty()) {
             throw new NullArgumentException("L'identificador del vehicle no pot ser nul o buit.");
         }
