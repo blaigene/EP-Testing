@@ -1,4 +1,7 @@
 package data;
+
+import data.exceptions.NullArgumentException;
+
 /**
 * Essential data classes
 */

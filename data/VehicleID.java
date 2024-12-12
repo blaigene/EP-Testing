@@ -1,4 +1,5 @@
 package data;
+import data.exceptions.NullArgumentException;
 
 /**
  * Classe que representa l'identificador d'un vehicle.
@@ -8,10 +9,10 @@ final public class VehicleID {
 
     public VehicleID(String id) {
         if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("L'identificador del vehicle no pot ser nul o buit.");
+            throw new NullArgumentException("L'identificador del vehicle no pot ser nul o buit.");
         }
-        if (!id.matches("VH[0-9]{5}")) {
-            throw new IllegalArgumentException("L'identificador del vehicle ha de seguir el patró 'VHxxxxx' (5 dígits).");
+        if (!id.matches("VH[0-9]{6}")) {
+            throw new IllegalArgumentException("L'identificador del vehicle ha de seguir el patró 'VHxxxxxx' (6 dígits).");
         }
         this.id = id;
     }

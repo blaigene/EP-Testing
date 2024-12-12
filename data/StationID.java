@@ -1,4 +1,5 @@
 package data;
+import data.exceptions.NullArgumentException;
 
 /**
  * Classe que representa l'identificador d'una estació.
@@ -8,10 +9,10 @@ final public class StationID {
 
     public StationID(String id) {
         if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("L'identificador de l'estació no pot ser nul o buit.");
+            throw new NullArgumentException("L'identificador de l'estació no pot ser nul o buit.");
         }
-        if (!id.matches("ST[0-9]{5}")) {
-            throw new IllegalArgumentException("L'identificador de l'estació ha de seguir el patró 'STxxxxx' (5 dígits).");
+        if (!id.matches("ST[0-9]{6}")) {
+            throw new IllegalArgumentException("L'identificador de l'estació ha de seguir el patró 'STxxxxxx' (6 dígits).");
         }
         this.id = id;
     }
