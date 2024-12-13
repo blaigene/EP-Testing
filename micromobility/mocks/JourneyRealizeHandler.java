@@ -1,8 +1,7 @@
-package micromobility;
+package micromobility.mocks;
 
-import data.*;
 import data.mocks.*;
-
+import micromobility.exceptions.*;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
@@ -49,35 +48,5 @@ public class JourneyRealizeHandler {
 
     private void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
         // Càlcul de l'import del servei
-    }
-
-    public static class InvalidPairingArgsException extends Exception {
-        public InvalidPairingArgsException(String message) {
-            super(message);
-        }
-    }
-
-    public static class CorruptedImgException extends Exception {
-        public CorruptedImgException(String message) {
-            super(message);
-        }
-    }
-
-    public static class PMVNotAvailException extends Exception {
-        public PMVNotAvailException(String message) {
-            super(message);
-        }
-    }
-
-    public static class ProceduralException extends Exception {
-        public ProceduralException(String message) {
-            super(message);
-        }
-    }
-
-    public static class PairingNotFoundException extends Exception {
-        public PairingNotFoundException(String message) {
-            super(message);
-        }
     }
 }
