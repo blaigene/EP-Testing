@@ -1,6 +1,6 @@
 package micromobility;
 
-import data.GeographicPoint;
+import data.mocks.*;
 
 /**
  * Classe que representa un vehicle de micromobilitat.

@@ -1,6 +1,8 @@
 package micromobility;
 
 import data.*;
+import data.mocks.*;
+
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
@@ -8,6 +10,9 @@ import java.time.LocalDateTime;
  * Classe controladora per gestionar els esdeveniments del cas d'ús de realitzar trajectes.
  */
 public class JourneyRealizeHandler {
+    // DSS  el sistema és JOURNEYREALIZEHANDLER
+    // 3 CANALS D'ENTRADA
+    // CAL PENDRE ALGUNA DECISIÓ, NO ENS HO CHIVA
     private PMVehicle vehicle;
     private JourneyService service;
 

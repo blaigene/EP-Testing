@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
  * Classe que representa el servei de trajectes.
  */
 public class JourneyService {
+    // SERVEIS IMPLICITS
+    // MODEL DEL DOMINI, ATRIBUTS DE LA CLASSE, ALGUN NO IMPLICITATS, REVISAR CLASSE ASOCITIVA, DRIVER, PMVehicle (NOMÉS EL ID, USER ACCOUNT), PER PARTT 2, SERVICE ID
     private String journeyId;
     private LocalDateTime serviceInit;
     private LocalDateTime serviceFinish;

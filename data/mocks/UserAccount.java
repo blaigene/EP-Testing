@@ -1,4 +1,5 @@
-package data;
+package data.mocks;
+import data.exceptions.NullArgumentException;
 
 /**
  * Classe que representa un compte d'usuari.
@@ -8,10 +9,10 @@ final public class UserAccount {
 
     public UserAccount(String username) {
         if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nom d'usuari no pot ser nul o buit.");
+            throw new NullArgumentException("El nom d'usuari no pot ser nul o buit.");
         }
-        if (!username.matches("[a-zA-Z0-9._-]{3,15}")) {
-            throw new IllegalArgumentException("El nom d'usuari ha de tenir entre 3 i 15 caràcters (lletres, números, '.', '-', '_').");
+        if (!username.matches("[a-zA-Z0-9._-]{15}")) {
+            throw new IllegalArgumentException("El nom d'usuari ha de tenir 15 caràcters (lletres, números, '.', '-', '_').");
         }
         this.username = username;
     }
