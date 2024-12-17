@@ -1,7 +1,8 @@
-package micromobility.mocks;
+package micromobility;
 
-import data.mocks.*;
-import micromobility.exceptions.*;
+import data.GeographicPoint;
+import exceptions.IncorrectChargeLevel;
+import exceptions.*;
 
 import java.awt.image.BufferedImage;
 

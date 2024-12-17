@@ -1,4 +1,4 @@
-package micromobility.exceptions;
+package exceptions;
 
 public class IncorrectChargeLevel extends RuntimeException {
     public IncorrectChargeLevel(String message) {

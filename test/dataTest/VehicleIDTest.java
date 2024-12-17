@@ -1,6 +1,6 @@
 package test.dataTest;
-import data.exceptions.NullArgumentException;
-import data.mocks.VehicleID;
+import exceptions.NullArgumentException;
+import data.VehicleID;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

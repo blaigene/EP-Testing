@@ -9,6 +9,7 @@ import data.VehicleID;
 import exceptions.InvalidPairingArgsException;
 import exceptions.PMVNotAvailException;
 import exceptions.PairingNotFoundException;
+import micromobility.JourneyService;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;

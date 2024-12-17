@@ -1,5 +1,5 @@
-package data.mocks;
-import data.exceptions.NullArgumentException;
+package data;
+import exceptions.NullArgumentException;
 
 /**
  * Classe que representa l'identificador d'una estació.

@@ -1,8 +1,10 @@
 package test.micromobility;
 
-import data.mocks.*;
-import micromobility.exceptions.*;
-import micromobility.mocks.*;
+import data.GeographicPoint;
+import exceptions.IncorrectChargeLevel;
+import micromobility.PMVState;
+import micromobility.PMVehicle;
+import exceptions.*;
 import org.junit.jupiter.api.*;
 import java.awt.image.BufferedImage;
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class PMVehicleTest {
     private static BufferedImage sampleQrCode;
-    private PMVehicle PMVehicle;
+    private micromobility.PMVehicle PMVehicle;
     private GeographicPoint sampleLocation;
 
     @BeforeAll

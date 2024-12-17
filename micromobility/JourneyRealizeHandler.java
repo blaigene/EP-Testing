@@ -1,7 +1,8 @@
-package micromobility.mocks;
+package micromobility;
 
-import data.mocks.*;
-import micromobility.exceptions.*;
+import data.GeographicPoint;
+import data.StationID;
+import exceptions.*;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 

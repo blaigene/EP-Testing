@@ -7,6 +7,7 @@ import data.VehicleID;
 import exceptions.InvalidPairingArgsException;
 import exceptions.PMVNotAvailException;
 import exceptions.PairingNotFoundException;
+import micromobility.JourneyService;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;
@@ -91,8 +92,9 @@ public class ServerImpl implements Server{
 
     @Override
     public void unPairRegisterService(JourneyService s) throws PairingNotFoundException {
+        /*
         // Aquest mètode podria gestionar el registre del servei i desvinculació al final d'un viatge.
-        VehicleID veh = s.getVehicleID();  // Suposant que JourneyService té aquest mètode
+        String veh = s.getVehicleID();  // Suposant que JourneyService té aquest mètode
         if (!activePairings.containsKey(veh)) {
             throw new PairingNotFoundException("No s'ha trobat l'emparellament per al vehicle proporcionat.");
         }
@@ -101,6 +103,7 @@ public class ServerImpl implements Server{
         activePairings.remove(veh);
         vehicleAvailability.put(veh, true);
         System.out.println("Servei desemparellat i registrat correctament.");
+        */
     }
 
     @Override

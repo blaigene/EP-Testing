@@ -1,6 +1,6 @@
 package test.dataTest;
-import data.exceptions.NullArgumentException;
-import data.mocks.UserAccount;
+import exceptions.NullArgumentException;
+import data.UserAccount;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

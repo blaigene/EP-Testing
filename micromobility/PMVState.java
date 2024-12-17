@@ -1,4 +1,4 @@
-package micromobility.mocks;
+package micromobility;
 
 /**
  * Enumeració dels estats possibles d'un vehicle de micromobilitat.

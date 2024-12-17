@@ -1,4 +1,4 @@
-package data.mocks;
+package data;
 
 /**
 * Essential data classes
