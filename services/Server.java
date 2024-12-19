@@ -6,9 +6,8 @@ import data.GeographicPoint;
 import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
-import exceptions.InvalidPairingArgsException;
-import exceptions.PMVNotAvailException;
-import exceptions.PairingNotFoundException;
+// FER EL PAQUET D'EXCEPCIONS DE SERVICES I CANVIAR PER EL DE MICROMOBILITY
+import micromobility.exceptions.*;
 import micromobility.JourneyService;
 
 import java.math.BigDecimal;

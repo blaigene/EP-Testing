@@ -4,9 +4,7 @@ import data.GeographicPoint;
 import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
-import exceptions.InvalidPairingArgsException;
-import exceptions.PMVNotAvailException;
-import exceptions.PairingNotFoundException;
+import micromobility.exceptions.*;
 import micromobility.JourneyService;
 
 import java.math.BigDecimal;

@@ -1,5 +1,5 @@
 package data;
-import exceptions.NullArgumentException;
+import data.exceptions.*;
 
 /**
  * Classe que representa l'identificador d'una estació.

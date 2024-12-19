@@ -1,7 +1,8 @@
 package services.smartfeatures;
 
 import data.VehicleID;
-import exceptions.CorruptedImgException;
+// FER EL PAQUET D'EXCEPCIONS DE SERVICES I CANVIAR PER EL DE MICROMOBILITY
+import micromobility.exceptions.*;
 
 import java.awt.image.BufferedImage;
 

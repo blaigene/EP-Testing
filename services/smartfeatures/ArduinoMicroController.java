@@ -1,7 +1,7 @@
 package services.smartfeatures;
 
-import exceptions.PMVPhisicalException;
-import exceptions.ProceduralException;
+// FER EL PAQUET D'EXCEPCIONS DE SERVICES I CANVIAR PER EL DE MICROMOBILITY
+import micromobility.exceptions.*;
 
 import java.net.ConnectException;
 

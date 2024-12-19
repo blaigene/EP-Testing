@@ -1,7 +1,7 @@
 package micromobility;
 
 import data.*;
-import exceptions.*;
+import micromobility.exceptions.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,7 +24,7 @@ public class JourneyService {
     private final String journeyId;
     private LocalDate initDate;
     private LocalTime initHour;
-    private int duration; // en minuts
+    public int duration; // en minuts
     private double distance; // en quilòmetres
     private double avgSpeed; // en km/h
     private GeographicPoint originPoint;
@@ -34,8 +34,8 @@ public class JourneyService {
     private double importCost;
     private final String serviceID;
     private boolean inProgress;
-    private UserAccount userAccount; // USERACCOUNT
-    private VehicleID vehicleID; // VEHICLEID
+    private UserAccount userAccount;
+    private VehicleID vehicleID;
 
     public JourneyService(String journeyId, String serviceID) {
         // Validació del format de journeyID
