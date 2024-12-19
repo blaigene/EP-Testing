@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests per verificar la classe StationID seguint la estructura JUnit 5.
  */
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StationIDTest {
 

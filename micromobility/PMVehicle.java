@@ -5,7 +5,7 @@ import micromobility.exceptions.*;
 import java.awt.image.BufferedImage;
 
 /**
- * Classe que representa un vehicle de micromobilitat.
+ * Classe que representa un PMVehicle.
  */
 public class PMVehicle {
     private String id;

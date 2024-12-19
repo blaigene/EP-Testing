@@ -7,16 +7,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-/*
-CANVIAR TEST DE PAQUET A CARPETA TEST
-EXCEPTIONS PER CADA PAQUET
-
-INFORME:
-- PRINCIPIS GRASP
-- CODE SMELLS
-- DECISIONS DE DISSENY
- */
-
 /**
  * Classe que representa el servei de trajectes.
  */

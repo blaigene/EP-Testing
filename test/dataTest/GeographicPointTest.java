@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests per verificar la classe GeographicPoint seguint la estructura JUnit 5.
  */
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GeographicPointTest {
 
