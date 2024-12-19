@@ -200,20 +200,16 @@ public class JourneyServiceTest {
         assertEquals(15.0, journeyService.getImportCost());
         assertEquals("S123456", journeyService.getServiceID());
         assertFalse(journeyService.isInProgress());
-        assertEquals("usuari_exemple1", journeyService.getUsername());
+        assertEquals("usuari_exemple1", journeyService.getUserAccount());
         assertEquals("VH123456", journeyService.getVehicleID());
     }
 
     @Test
     void testSetters() {
-        journeyService.setServiceInit(LocalDate.of(2024, 12, 2), LocalTime.of(9, 0));
-        assertEquals(LocalDate.of(2024, 12, 2), journeyService.getInitDate());
-        assertEquals(LocalTime.of(9, 0), journeyService.getInitHour());
+        journeyService.setServiceInit();
         assertTrue(journeyService.isInProgress());
 
-        journeyService.setServiceFinish(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0));
-        assertEquals(LocalDate.of(2024, 12, 2), journeyService.getEndDate());
-        assertEquals(LocalTime.of(10, 0), journeyService.getEndHour());
+        journeyService.setServiceFinish();
         assertFalse(journeyService.isInProgress());
     }
 
@@ -227,7 +223,7 @@ public class JourneyServiceTest {
                 "distance=10.5, " +
                 "avgSpeed=10.5, " +
                 "originPoint='Plaça Catalunya', " +
-                "endPoint='Plaça Espanya', " +
+                "endPoint='Plaça Espanya*', " +
                 "endDate=2024-12-01, " +
                 "endHour=11:30, " +
                 "importCost=15.0, " +

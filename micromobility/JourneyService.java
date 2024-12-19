@@ -1,105 +1,65 @@
 package micromobility;
 
+import data.*;
 import exceptions.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+
+/*
+CANVIAR TEST DE PAQUET A CARPETA TEST
+EXCEPTIONS PER CADA PAQUET
+
+INFORME:
+- PRINCIPIS GRASP
+- CODE SMELLS
+- DECISIONS DE DISSENY
+ */
 
 /**
  * Classe que representa el servei de trajectes.
  */
 public class JourneyService {
-    private String journeyId;
+    private final String journeyId;
     private LocalDate initDate;
     private LocalTime initHour;
     private int duration; // en minuts
     private double distance; // en quilòmetres
     private double avgSpeed; // en km/h
-    private String originPoint;
-    private String endPoint;
+    private GeographicPoint originPoint;
+    private GeographicPoint endPoint;
     private LocalDate endDate;
     private LocalTime endHour;
     private double importCost;
-    private String serviceID;
+    private final String serviceID;
     private boolean inProgress;
-    private String username;
-    private String vehicleID;
+    private UserAccount userAccount; // USERACCOUNT
+    private VehicleID vehicleID; // VEHICLEID
 
-    public JourneyService(String journeyId, LocalDate initDate, LocalTime initHour, int duration, double distance,
-                          double avgSpeed, String originPoint, String endPoint, LocalDate endDate, LocalTime endHour,
-                          double importCost, String serviceID, boolean inProgress, String username, String vehicleID) {
-        // Validació de camps que no poden ser nuls
-        if (journeyId == null || initDate == null || initHour == null || originPoint == null || endPoint == null || endDate == null
-                || endHour == null || serviceID == null || username == null || vehicleID == null || journeyId.isEmpty()
-                || originPoint.isEmpty() || endPoint.isEmpty() || serviceID.isEmpty() || username.isEmpty() || vehicleID.isEmpty()) {
-            throw new NullArgumentException("Els paràmetres no poden ser nuls o buits");
-        }
-
+    public JourneyService(String journeyId, String serviceID) {
         // Validació del format de journeyID
         if (!journeyId.matches("J[0-9]{6}")) {
             throw new IllegalArgumentException("L'identificador del viatje ha de seguir el patró 'Jxxxxxx' (6 dígits).");
         }
 
-        // Validació del format de journeyID
+        // Validació del format de serviceID
         if (!serviceID.matches("S[0-9]{6}")) {
             throw new IllegalArgumentException("L'identificador del servei ha de seguir el patró 'Sxxxxxx' (6 dígits).");
         }
 
-        // Validació dels valors que no poden ser negatius
-        if (duration < 0) {
-            throw new NegativeDurationException("La duració no pot ser negativa");
-        }
-        if (distance < 0) {
-            throw new NegativeDistanceException("La distància no pot ser negativa");
-        }
-        if (avgSpeed < 0) {
-            throw new NegativeAvgSpeedException("La velocitat mitjana no pot ser negativa");
-        }
-        if (importCost < 0) {
-            throw new NegativeImportCostException("El cost d'importació no pot ser negatiu");
-        }
-        // Validació de punts d'origen i destinació
-        if (originPoint.equals(endPoint)) {
-            throw new EqualInitAndEndPointException("El punt d'origen no pot ser igual al punt de destinació");
-        }
-
-        // Validació de coherència de dates i hores: Inici no pot ser posterior a final
-        if (endDate.isBefore(initDate) || (endDate.equals(initDate) && endHour.isBefore(initHour))) {
-            throw new DataInconsistencyException("La data i hora de finalització han de ser posteriors a la d'inici");
-        }
-
-        // Validació de consistència del camp inProgress
-        if (!inProgress && (endDate == null || endHour == null)) {
-            throw new ProgressInconsistencyException("Un viatge complet ha de tenir data i hora de finalització");
-        }
-
-        // Validació del format de username i vehicleID
-        if (!username.matches("[a-zA-Z0-9._-]{15}")) {
-            throw new IllegalArgumentException("El nom d'usuari ha de tenir 15 caràcters (lletres, números, '.', '-', '_').");
-        }
-
-        // Validació del format de vehicleID
-        if (!vehicleID.matches("VH[0-9]{6}")) {
-            throw new IllegalArgumentException("L'identificador del vehicle ha de seguir el patró 'VHxxxxxx' (6 dígits).");
-        }
         this.journeyId = journeyId;
-        this.initDate = initDate;
-        this.initHour = initHour;
-        this.duration = duration;
-        this.distance = distance;
-        this.avgSpeed = avgSpeed;
-        this.originPoint = originPoint;
-        this.endPoint = endPoint;
-        this.endDate = endDate;
-        this.endHour = endHour;
-        this.importCost = importCost;
         this.serviceID = serviceID;
-        this.inProgress = inProgress;
-        this.username = username;
-        this.vehicleID = vehicleID;
+        setInitDate();
+        setInitHour();
     }
 
     public String getJourneyId() {
         return journeyId;
+    }
+
+    public String getServiceID() {
+        return serviceID;
     }
 
     public LocalDate getInitDate() {
@@ -122,11 +82,11 @@ public class JourneyService {
         return avgSpeed;
     }
 
-    public String getOriginPoint() {
+    public GeographicPoint getOriginPoint() {
         return originPoint;
     }
 
-    public String getEndPoint() {
+    public GeographicPoint getEndPoint() {
         return endPoint;
     }
 
@@ -142,32 +102,130 @@ public class JourneyService {
         return importCost;
     }
 
-    public String getServiceID() {
-        return serviceID;
-    }
-
     public boolean isInProgress() {
         return inProgress;
+    }        
+
+    public UserAccount getUserAccount() {
+        return userAccount;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getVehicleID() {
+    public VehicleID getVehicleID() {
         return vehicleID;
     }
 
-    public void setServiceInit(LocalDate initDate, LocalTime initHour) {
-        this.initDate = initDate;
-        this.initHour = initHour;
+    public void setServiceInit() {
         this.inProgress = true;
     }
 
-    public void setServiceFinish(LocalDate endDate, LocalTime endHour) {
-        this.endDate = endDate;
-        this.endHour = endHour;
+    public void setServiceFinish() {
         this.inProgress = false;
+    }
+
+    public void setInitDate() {
+        this.initDate = LocalDate.now();
+    }
+
+    public void setInitHour() {
+        this.initHour = LocalTime.now();
+    }
+
+    public void setEndDate() {
+        LocalDate provDate = LocalDate.now();
+        if (initDate != null && provDate.isBefore(initDate)) {
+            throw new DataInconsistencyException("La data de finalització ha de ser posterior o igual a la data d'inici.");
+        }
+        this.endDate = provDate;
+    }
+
+    public void setEndHour() {
+        LocalTime provHour = LocalTime.now();
+        if (endDate != null && initDate != null && initHour != null
+                && endDate.equals(initDate) && provHour.isBefore(initHour)) {
+            throw new DataInconsistencyException("L'hora de finalització ha de ser posterior a l'hora d'inici.");
+        }
+        this.endHour = provHour;
+        setDuration();
+    }
+
+    public void setDuration() {
+        if (initDate == null || initHour == null || endDate == null || endHour == null) {
+            throw new DataInconsistencyException("Les dades d'inici i finalització han d'estar configurades abans de calcular la duració.");
+        }
+
+        LocalDateTime startDateTime = LocalDateTime.of(initDate, initHour);
+        LocalDateTime endDateTime = LocalDateTime.of(endDate, endHour);
+
+        if (endDateTime.isBefore(startDateTime)) {
+            throw new DataInconsistencyException("La data i hora de finalització han de ser posteriors a la data i hora d'inici.");
+        }
+
+        this.duration = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+    }
+
+    public void setDistance(double distance) {
+        if (distance < 0) {
+            throw new NegativeDistanceException("La distància no pot ser negativa.");
+        }
+        this.distance = distance;
+        setAvgSpeed();
+    }
+
+    public void setAvgSpeed() {
+        if (distance <= 0) {
+            throw new NegativeDistanceException("La distància ha de ser superior a 0 per calcular la velocitat mitjana.");
+        }
+        if (duration <= 0) {
+            throw new NegativeDurationException("La duració ha de ser superior a 0 per calcular la velocitat mitjana.");
+        }
+
+        // Convertir la duració de minuts a hores per calcular la velocitat mitjana
+        double durationInHours = duration / 60.0;
+
+        // Calcular la velocitat mitjana
+        this.avgSpeed = distance / durationInHours;
+
+        if (this.avgSpeed < 0) {
+            throw new NegativeAvgSpeedException("La velocitat mitjana no pot ser negativa.");
+        }
+    }
+
+    public void setOriginPoint(GeographicPoint originPoint) {
+        if (originPoint == null) {
+            throw new IllegalArgumentException("El punt d'origen no pot ser nul.");
+        }
+        this.originPoint = originPoint;
+    }
+
+    public void setEndPoint(GeographicPoint endPoint) {
+        if (endPoint == null) {
+            throw new IllegalArgumentException("El punt de destinació no pot ser nul.");
+        }
+        if (originPoint != null && originPoint.equals(endPoint)) {
+            throw new EqualInitAndEndPointException("El punt d'origen no pot ser igual al punt de destinació.");
+        }
+        this.endPoint = endPoint;
+    }
+
+    public void setImportCost(double importCost) {
+        if (importCost < 0) {
+            throw new NegativeImportCostException("El cost d'importació no pot ser negatiu.");
+        }
+        this.importCost = importCost;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        if (userAccount == null) {
+            throw new NullArgumentException("L'usuari no pot ser nul.");
+        }
+        this.userAccount = userAccount;
+    }
+
+    public void setVehicleID(VehicleID vehicleID) {
+        if (vehicleID == null) {
+            throw new NullArgumentException("El vehicle no pot ser nul.");
+        }
+        this.vehicleID = vehicleID;
     }
 
     @Override
@@ -186,7 +244,7 @@ public class JourneyService {
                 ", importCost=" + importCost +
                 ", serviceID='" + serviceID + '\'' +
                 ", inProgress=" + inProgress +
-                ", username='" + username + '\'' +
+                ", username='" + userAccount + '\'' +
                 ", vehicleID='" + vehicleID + '\'' +
                 '}';
     }

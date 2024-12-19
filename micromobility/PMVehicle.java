@@ -1,9 +1,7 @@
 package micromobility;
 
 import data.GeographicPoint;
-import exceptions.IncorrectChargeLevel;
 import exceptions.*;
-
 import java.awt.image.BufferedImage;
 
 /**
@@ -16,26 +14,27 @@ public class PMVehicle {
     private String sensorsData;
     private double chargeLevel;
     private BufferedImage qrCode;
-    private String driverUsername;
-    private String stationID;
+    private String driverUsername; //
+    private String stationID; //
     
     public PMVehicle(String id, GeographicPoint location, String sensorsData, double chargeLevel, BufferedImage qrCode, String username, String stationID) {
+        /*
         if (id == null || location == null || sensorsData == null || qrCode == null || username == null || stationID == null
         || id.trim().isEmpty() || sensorsData.trim().isEmpty() || username.trim().isEmpty() || stationID.trim().isEmpty()) {
             throw new NullArgumentException("Els paràmetres no poden ser nuls o buits");
         }
+         */
         if (!id.matches("PMV[0-9]{6}")) {
             throw new IllegalArgumentException("L'identificador del vehicle ha de seguir el patró 'PMVxxxxxx' (6 dígits).");
-        }
-        if (!(location instanceof GeographicPoint)) {
-            throw new ClassCastException("El paràmetre location ha de ser una instància de GeographicPoint");
         }
         if (chargeLevel < 0 || chargeLevel > 100) {
             throw new IncorrectChargeLevel("Nivell de càrrega ha de ser entre 0 i 100");
         }
+        //
         if (!username.matches("[a-zA-Z0-9._-]{15}")) {
             throw new IllegalArgumentException("El nom d'usuari ha de tenir 15 caràcters (lletres, números, '.', '-', '_').");
         }
+        //
         if (!stationID.matches("ST[0-9]{6}")) {
             throw new IllegalArgumentException("L'identificador de l'estació ha de seguir el patró 'STxxxxxx' (6 dígits).");
         }

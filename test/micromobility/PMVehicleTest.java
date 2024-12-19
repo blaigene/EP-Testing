@@ -2,8 +2,7 @@ package test.micromobility;
 
 import data.GeographicPoint;
 import exceptions.IncorrectChargeLevel;
-import micromobility.PMVState;
-import micromobility.PMVehicle;
+import micromobility.*;
 import exceptions.*;
 import org.junit.jupiter.api.*;
 import java.awt.image.BufferedImage;
