@@ -87,6 +87,10 @@ public class PMVehicleTest {
 
         PMVehicle.setAvailble();
         Assertions.assertEquals(PMVState.Available, PMVehicle.getState());
+
+        // Añadido el test para TemporaryParking
+        PMVehicle.setTemporaryParking();
+        Assertions.assertEquals(PMVState.TemporaryParking, PMVehicle.getState());
     }
 
     @Test

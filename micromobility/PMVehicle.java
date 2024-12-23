@@ -76,6 +76,10 @@ public class PMVehicle {
         this.state = PMVState.Available;
     }
 
+    public void setTemporaryParking() {
+        this.state = PMVState.TemporaryParking;  // Asigna el estado a TemporaryParking
+    }
+
     public void setLocation(GeographicPoint gP) {
         this.location = gP;
     }
