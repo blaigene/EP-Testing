@@ -1,7 +1,7 @@
 package services.smartfeatures;
 
 import data.VehicleID;
-import micromobility.exceptions.CorruptedImgException;
+import services.exceptions.*;
 
 import java.awt.image.BufferedImage;
 
