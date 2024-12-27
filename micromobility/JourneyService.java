@@ -135,10 +135,10 @@ public class JourneyService {
             throw new DataInconsistencyException("L'hora de finalització ha de ser posterior a l'hora d'inici.");
         }
         this.endHour = provHour;
-        setDuration();
+        setDuration((int) minutesBetween);
     }
 
-    public void setDuration() {
+    public void setDuration(int minutesBetween) {
         if (initDate == null || initHour == null || endDate == null || endHour == null) {
             throw new DataInconsistencyException("Les dades d'inici i finalització han d'estar configurades abans de calcular la duració.");
         }
@@ -158,10 +158,10 @@ public class JourneyService {
             throw new NegativeDistanceException("La distància no pot ser negativa.");
         }
         this.distance = distance;
-        setAvgSpeed();
+        setAvgSpeed(distance / (minutesBetween / 60.0));
     }
 
-    public void setAvgSpeed() {
+    public void setAvgSpeed(double v) {
         if (distance <= 0) {
             throw new NegativeDistanceException("La distància ha de ser superior a 0 per calcular la velocitat mitjana.");
         }

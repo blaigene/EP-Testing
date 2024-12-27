@@ -1,6 +1,7 @@
 package micromobility;
 
 import data.GeographicPoint;
+import data.VehicleID;
 import micromobility.exceptions.*;
 import java.awt.image.BufferedImage;
 
@@ -36,7 +37,7 @@ public class PMVehicle {
         this.stationID = stationID;
     }
 
-    public String getId() {
+    public VehicleID getId() {
         return id;
     }
 

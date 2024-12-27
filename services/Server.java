@@ -36,4 +36,5 @@ public interface Server { // External service for the persistent storage
             throws PairingNotFoundException;
     void registerLocation(VehicleID veh, StationID st);
 
+    boolean isConnected();
 }
