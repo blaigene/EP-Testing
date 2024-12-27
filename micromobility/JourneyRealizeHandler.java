@@ -31,7 +31,7 @@ public class JourneyRealizeHandler {
         // Lògica per desconnectar el vehicle
     }
 
-    public void broadcastStationID(StationID stID) throws ConnectException {
+    public static void broadcastStationID(StationID stID) throws ConnectException {
         // Lògica per rebre l'ID de l'estació
     }
 

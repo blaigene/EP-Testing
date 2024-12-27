@@ -64,4 +64,17 @@ public class ArduinoMicroControllerImpl implements ArduinoMicroController {
     public void setVehicleHasIssues(boolean hasIssues) {
         this.vehicleHasIssues = hasIssues;
     }
+
+    // Getters per a les variables booleans
+    public boolean isBTConnected() {
+        return isBTConnected;
+    }
+
+    public boolean isDriving() {
+        return isDriving;
+    }
+
+    public boolean isVehicleHasIssues() {
+        return vehicleHasIssues;
+    }
 }
