@@ -57,7 +57,7 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void stopPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date, float avSp, float dist, int dur, BigDecimal imp) throws InvalidPairingArgsException, ConnectException, PairingNotFoundException {
+    public void stopPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date, double avSp, double dist, int dur, BigDecimal imp) throws InvalidPairingArgsException, ConnectException, PairingNotFoundException {
         // Verificar si el vehicle està emparellat amb aquest usuari
         if (!activePairings.containsKey(veh) || !activePairings.get(veh).equals(user)) {
             throw new InvalidPairingArgsException("No es pot aturar l'emparellament perquè no s'ha trobat el vehicle emparellat amb aquest usuari.");

@@ -3,6 +3,8 @@ package micromobility;
 import data.GeographicPoint;
 import data.StationID;
 import micromobility.exceptions.*;
+import micromobility.payment.Wallet;
+import micromobility.payment.WalletPayment;
 import services.Server;
 import services.smartfeatures.QRDecoder;
 import services.smartfeatures.UnbondedBTSignal;
@@ -17,9 +19,7 @@ import java.time.temporal.ChronoUnit;
  * Classe controladora per gestionar els esdeveniments del cas d'ús de realitzar trajectes.
  */
 public class JourneyRealizeHandler {
-    // DSS  el sistema és JOURNEYREALIZEHANDLER
-    // 3 CANALS D'ENTRADA
-    // CAL PENDRE ALGUNA DECISIÓ, NO ENS HO CHIVA
+
     private PMVehicle vehicle;
     private JourneyService service;
     private QRDecoder qrDecoder;
@@ -189,5 +189,25 @@ public class JourneyRealizeHandler {
 
         // Actualizar el servicio con el importe calculado
         service.setImportCost(totalCost);
+    }
+
+    public void selectPaymentMethod(char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
+        if (opt == 'w') {
+            BigDecimal journeyCost = new BigDecimal(this.service.getImportCost());
+
+            try {
+                this.realizePayment(journeyCost);
+            } catch (NotEnoughWalletException var4) {
+                throw new NotEnoughWalletException("Saldo insuficient per realitzar el pagament.");
+            }
+        } else {
+            throw new ProceduralException("Método de pago no soportado.");
+        }
+    }
+
+    private void realizePayment(BigDecimal imp) {
+        Wallet fakeWallet = new Wallet(new BigDecimal(200));
+        WalletPayment payment = new WalletPayment( 'W',this.service.getUserAccount(), imp, fakeWallet);
+        payment.processPayment();
     }
 }
