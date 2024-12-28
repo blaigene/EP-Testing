@@ -1,7 +1,7 @@
-package test.dataTest;
+package dataTest;
 
-import data.exceptions.*;
 import data.UserAccount;
+import data.exceptions.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

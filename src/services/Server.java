@@ -1,14 +1,11 @@
 package services;
-//External services involved in the shared micromobility system
-// TREURE HASHMAP
-// FER DOBLES O MÉS SIMPLE POSSIBLE
+
 import data.GeographicPoint;
 import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
-// FER EL PAQUET D'EXCEPCIONS DE SERVICES I CANVIAR PER EL DE MICROMOBILITY
-import micromobility.exceptions.*;
 import micromobility.JourneyService;
+import services.exceptions.*;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;

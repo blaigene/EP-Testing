@@ -1,4 +1,4 @@
-package test.micromobilityTest;
+package micromobilityTest;
 
 import data.GeographicPoint;
 import micromobility.*;

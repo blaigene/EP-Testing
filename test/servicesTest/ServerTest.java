@@ -1,4 +1,4 @@
-package test.servicesTest;
+package servicesTest;
 
 import data.GeographicPoint;
 import data.StationID;
@@ -11,8 +11,6 @@ import services.exceptions.*;
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +21,6 @@ class ServerTest {
     private UserAccount userAccount;
     private StationID stationID;
     private GeographicPoint stationLocation;
-    private GeographicPoint wrongLocation;
 
     @BeforeAll
     static void setupAll() {
@@ -38,79 +35,99 @@ class ServerTest {
         userAccount = new UserAccount("fakeuser_123456");
         stationID = new StationID("ST123456");
         stationLocation = new GeographicPoint(41.40338f, 2.17403f); // Latitud i longitud de la ubicació de l'estació
-        wrongLocation = new GeographicPoint(40.71278f, -74.0060f);  // Latitud i longitud incorrecta
+
+        // Inicialitzar les col·leccions necessàries abans de les proves
         server.registerLocation(vehicleID, stationID); // Registra el vehicle a l'estació
-    }
-
-    @Test
-    void testCheckPMVAvail_vehicleAvailable() throws ConnectException, PMVNotAvailException {
-        // Afegeix el vehicle com a disponible
-        Map<VehicleID, Boolean> vehicleAvailability = new HashMap<>();
-        vehicleAvailability.put(vehicleID, true);
-
-        assertDoesNotThrow(() -> server.checkPMVAvail(vehicleID));
-    }
-
-    @Test
-    void testCheckPMVAvail_vehicleNotAvailable() {
-        // Test per comprovar que es llença l'excepció si el vehicle no està disponible
-        assertThrows(PMVNotAvailException.class, () -> {
-            server.checkPMVAvail(vehicleID);
-        });
-    }
-
-    @Test
-    void testRegisterPairing_validPairing() throws InvalidPairingArgsException, ConnectException {
-        // Test per verificar que es pot registrar un emparellament vàlid
-        server.registerLocation(vehicleID, stationID); // Registra la ubicació del vehicle a l'estació
-        assertDoesNotThrow(() -> server.registerPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now()));
-    }
-
-    @Test
-    void testRegisterPairing_invalidLocation() {
-        // Test per verificar que es llença excepció si la ubicació no és correcta
-        assertThrows(InvalidPairingArgsException.class, () -> {
-            server.registerPairing(userAccount, vehicleID, stationID, wrongLocation, LocalDateTime.now());
-        });
-    }
-
-    @Test
-    void testStopPairing_validPairing() throws InvalidPairingArgsException, PairingNotFoundException, ConnectException {
-
-        // Registra la ubicació del vehicle
-        server.registerLocation(vehicleID, stationID);
-
-        // Registra l'emparellament
-        server.registerPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now());
-
-        // Verifica que es pot aturar l'emparellament sense excepcions
-        assertDoesNotThrow(() -> {
-            server.stopPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now(), 20.0f, 5.0f, 30, new BigDecimal("12.50"));
-        });
-    }
-
-    @Test
-    void testStopPairing_noPairingFound() {
-        // Test per comprovar que es llença l'excepció si no es troba l'emparellament
-        assertThrows(PairingNotFoundException.class, () -> {
-            server.stopPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now(), 20.0f, 5.0f, 30, new BigDecimal("12.50"));
-        });
+        server.stationGPs.put(stationID, stationLocation); // Afegir la ubicació de l'estació
+        server.vehicleAvailability.put(vehicleID, true); // El vehicle està disponible
     }
 
     @AfterEach
     void tearDown() {
-        // Neteja després de cada test
+        // Netejar l'estat després de cada test
         server = null;
         vehicleID = null;
         userAccount = null;
         stationID = null;
         stationLocation = null;
-        wrongLocation = null;
+    }
+
+    @Test
+    void testCheckPMVAvail_vehicleNotAvailable() {
+        // El vehicle no està disponible, esperem l'excepció ConnectException
+        VehicleID invalidVehicleID = new VehicleID("VH999999");
+
+        assertThrows(ConnectException.class, () -> server.checkPMVAvail(invalidVehicleID));
+    }
+
+    @Test
+    void testCheckPMVAvail_vehiclePaired() throws ConnectException, PMVNotAvailException, InvalidPairingArgsException {
+        // Pairem un vehicle i després verifiquem la seva disponibilitat
+        server.setPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now());
+
+        assertThrows(PMVNotAvailException.class, () -> server.checkPMVAvail(vehicleID));
+    }
+
+    @Test
+    void testRegisterPairing_success() throws InvalidPairingArgsException, ConnectException {
+        // Prova un registre d'emparellament correcte
+        server.registerPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now());
+
+        // Comprovem que el vehicle s'ha emparellat correctament
+        assertEquals(userAccount, server.activePairings.get(vehicleID));
+        assertFalse(server.vehicleAvailability.get(vehicleID)); // Vehicle no disponible
+    }
+
+    @Test
+    void testRegisterPairing_invalidStationLocation() {
+        // Prova un emparellament amb una ubicació incorrecta
+        GeographicPoint wrongLocation = new GeographicPoint(40.0f, 3.0f);
+
+        assertThrows(InvalidPairingArgsException.class, () ->
+                server.registerPairing(userAccount, vehicleID, stationID, wrongLocation, LocalDateTime.now())
+        );
+    }
+
+    @Test
+    void testStopPairing_success() throws InvalidPairingArgsException, ConnectException, PairingNotFoundException {
+        server.registerPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now());
+
+        // Prova d'aturar l'emparellament
+        server.stopPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now(), 15f, 100f, 30, new BigDecimal("5.00"));
+
+        // Comprovem que l'emparellament s'ha eliminat
+        assertNull(server.activePairings.get(vehicleID));
+        assertTrue(server.vehicleAvailability.get(vehicleID)); // Vehicle torna a estar disponible
+    }
+
+    @Test
+    void testStopPairing_invalidPairing() {
+        assertThrows(InvalidPairingArgsException.class, () ->
+                server.stopPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now(), 15f, 100f, 30, new BigDecimal("5.00"))
+        );
+    }
+
+    @Test
+    void testUnpairRegisterService_success() throws PairingNotFoundException, InvalidPairingArgsException, ConnectException {
+        server.registerPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now());
+
+        // Creem un JourneyService fictici
+        JourneyService journeyService = new JourneyService("J000001", "S000001");
+        journeyService.setUserAccount(userAccount);
+        journeyService.setVehicleID(vehicleID);
+
+        // Prova d'unpair i registre del servei
+        server.unPairRegisterService(journeyService);
+
+        // Comprovem que el vehicle ja no està emparellat i que està disponible
+        assertNull(server.activePairings.get(vehicleID));
+        assertTrue(server.vehicleAvailability.get(vehicleID));
     }
 
     @AfterAll
     static void tearDownAll() {
         // Executat després de tots els tests
-        System.out.println("Finalitzats els tests de ServerImpl.");
+        System.out.println("Finalitzats els tests de Server.");
     }
 }
+

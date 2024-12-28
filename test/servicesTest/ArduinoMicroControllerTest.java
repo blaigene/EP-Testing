@@ -1,11 +1,9 @@
-package test.servicesTest;
+package servicesTest;
 
-import org.junit.jupiter.api.*;
 import services.exceptions.*;
+import org.junit.jupiter.api.*;
 import services.smartfeatures.ArduinoMicroControllerImpl;
-
 import java.net.ConnectException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArduinoMicroControllerTest {

@@ -1,8 +1,7 @@
-package test.servicesTest;
+package servicesTest;
 
-import services.exceptions.*;
 import services.smartfeatures.QRDecoderImpl;
-
+import services.exceptions.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.awt.image.BufferedImage;
