@@ -37,7 +37,7 @@ public class PMVehicle {
         this.stationID = stationID;
     }
 
-    public VehicleID getId() {
+    public String getId() {
         return id;
     }
 
@@ -75,6 +75,10 @@ public class PMVehicle {
 
     public void setAvailble() {
         this.state = PMVState.Available;
+    }
+
+    public VehicleID getVehicleID() {
+        return new VehicleID(id);
     }
 
     public void setTemporaryParking() {

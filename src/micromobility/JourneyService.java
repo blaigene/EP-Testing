@@ -1,6 +1,8 @@
 package micromobility;
 
 import micromobility.exceptions.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -40,7 +42,7 @@ public class JourneyService {
 
         this.journeyId = journeyId;
         this.serviceID = serviceID;
-        setInitDate();
+        setInitDate(LocalDateTime.now().minusHours(2));
         setInitHour();
     }
 
@@ -51,6 +53,7 @@ public class JourneyService {
     public String getServiceID() {
         return serviceID;
     }
+    
 
     public LocalDate getInitDate() {
         return initDate;
@@ -65,11 +68,11 @@ public class JourneyService {
     }
 
     public double getDistance() {
-        return distance;
+        return (float) distance;
     }
 
     public double getAvgSpeed() {
-        return avgSpeed;
+        return (float) avgSpeed;
     }
 
     public GeographicPoint getOriginPoint() {
@@ -80,8 +83,8 @@ public class JourneyService {
         return endPoint;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
+    public LocalDateTime getEndDate() {
+        return endDate.atStartOfDay();
     }
 
     public LocalTime getEndHour() {
@@ -89,7 +92,7 @@ public class JourneyService {
     }
 
     public double getImportCost() {
-        return importCost;
+        return (importCost);
     }
 
     public boolean isInProgress() {
@@ -112,7 +115,7 @@ public class JourneyService {
         this.inProgress = false;
     }
 
-    public void setInitDate() {
+    public void setInitDate(LocalDateTime localDateTime) {
         this.initDate = LocalDate.now();
     }
 
@@ -152,10 +155,7 @@ public class JourneyService {
 
         this.duration = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
     }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
+    
 
     public void setDistance(double distance) {
         if (distance < 0) {
@@ -241,6 +241,11 @@ public class JourneyService {
                 ", username='" + userAccount + '\'' +
                 ", vehicleID='" + vehicleID + '\'' +
                 '}';
+    }
+
+    public StationID getStationID(StationID stationID) {
+        return stationID;
+        
     }
 }
 

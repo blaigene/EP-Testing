@@ -22,7 +22,7 @@ public class ServerImpl implements Server {
     public Map<StationID, VehicleID> vehiclesInStation = new HashMap<>();
 
     @Override
-    public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
+    public boolean checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
         if (!vehicleAvailability.containsKey(vhID)) {
             throw new ConnectException("No s'ha pogut connectar amb el servidor per verificar la disponibilitat del vehicle.");
         }
@@ -31,6 +31,7 @@ public class ServerImpl implements Server {
         if (activePairings.containsKey(vhID)) {
             throw new PMVNotAvailException("El vehicle està emparellat amb un altre usuari.");
         }
+        return false;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void stopPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date, float avSp, float dist, int dur, BigDecimal imp) throws InvalidPairingArgsException, ConnectException, PairingNotFoundException {
+    public void stopPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date, double avSp, double dist, int dur, BigDecimal imp) throws InvalidPairingArgsException, ConnectException, PairingNotFoundException {
         // Verificar si el vehicle està emparellat amb aquest usuari
         if (!activePairings.containsKey(veh) || !activePairings.get(veh).equals(user)) {
             throw new InvalidPairingArgsException("No es pot aturar l'emparellament perquè no s'ha trobat el vehicle emparellat amb aquest usuari.");
@@ -73,7 +74,7 @@ public class ServerImpl implements Server {
         journeyService.setEndDate();
         journeyService.setDuration(dur);
         journeyService.setDistance(dist);
-        journeyService.setImportCost(imp.doubleValue());
+        journeyService.setImportCost(imp);
 
         unPairRegisterService(journeyService);
     }
@@ -104,5 +105,25 @@ public class ServerImpl implements Server {
     public void registerLocation(VehicleID veh, StationID st) {
         // Aquest mètode registra la nova ubicació del vehicle.
         vehiclesInStation.put(st, veh);
+    }
+
+    @Override
+    public boolean isConnected() {
+        return false;
+    }
+
+    @Override
+    public void broadcastStationID(StationID stationID) {
+
+    }
+
+    @Override
+    public void startJourney(VehicleID vehicleID, String serviceID) {
+
+    }
+
+    @Override
+    public void endJourney(VehicleID vehicleID, String serviceID, GeographicPoint endPoint, LocalDateTime endDate, float avgSpeed, float distance, int duration, BigDecimal importCost) {
+
     }
 }
