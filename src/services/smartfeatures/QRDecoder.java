@@ -7,4 +7,6 @@ import java.awt.image.BufferedImage;
 
 public interface QRDecoder {
   VehicleID getVehicleID(BufferedImage QRImg) throws CorruptedImgException;
+
+  String decodeQR(String qrCode);
 }

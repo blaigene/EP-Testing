@@ -1,6 +1,7 @@
 package micromobility;
 
 import data.GeographicPoint;
+import data.VehicleID;
 import micromobility.exceptions.*;
 import java.awt.image.BufferedImage;
 
@@ -74,6 +75,14 @@ public class PMVehicle {
 
     public void setAvailble() {
         this.state = PMVState.Available;
+    }
+
+    public VehicleID getVehicleID() {
+        return new VehicleID(id);
+    }
+
+    public void setTemporaryParking() {
+        this.state = PMVState.TemporaryParking;  // Asigna el estado a TemporaryParking
     }
 
     public void setLocation(GeographicPoint gP) {
