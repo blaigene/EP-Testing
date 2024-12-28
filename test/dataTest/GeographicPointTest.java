@@ -1,4 +1,4 @@
-package test.dataTest;
+package dataTest;
 
 import data.GeographicPoint;
 import org.junit.jupiter.api.*;

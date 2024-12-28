@@ -1,13 +1,9 @@
-package test.servicesTest;
+package servicesTest;
 
-import micromobility.exceptions.PMVPhisicalException;
-import micromobility.exceptions.ProceduralException;
+import services.exceptions.*;
 import org.junit.jupiter.api.*;
-import services.*;
 import services.smartfeatures.ArduinoMicroControllerImpl;
-
 import java.net.ConnectException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArduinoMicroControllerTest {
@@ -65,7 +61,7 @@ class ArduinoMicroControllerTest {
     }
 
     @Test
-    void testStopDrivingSuccessful() throws PMVPhisicalException, ConnectException, ProceduralException, ProceduralException, PMVPhisicalException {
+    void testStopDrivingSuccessful() throws PMVPhisicalException, ConnectException, ProceduralException {
         arduinoMicroController.setBTconnection();  // Estableix connexió BT
         arduinoMicroController.startDriving();     // Inicia el desplaçament
         arduinoMicroController.stopDriving();      // Atura el vehicle

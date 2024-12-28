@@ -1,8 +1,6 @@
 package services.smartfeatures;
 
-import micromobility.exceptions.PMVPhisicalException;
-import micromobility.exceptions.ProceduralException;
-//import services.exceptions.*;
+import services.exceptions.*;
 
 import java.net.ConnectException;
 

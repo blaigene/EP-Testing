@@ -1,11 +1,11 @@
 package micromobility;
 
-import data.*;
 import micromobility.exceptions.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import data.*;
 
 /**
  * Classe que representa el servei de trajectes.
@@ -151,6 +151,10 @@ public class JourneyService {
         }
 
         this.duration = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public void setDistance(double distance) {

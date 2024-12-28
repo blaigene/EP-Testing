@@ -1,4 +1,4 @@
-package test.servicesTest;
+package servicesTest;
 
 import data.StationID;
 import micromobility.JourneyRealizeHandler;

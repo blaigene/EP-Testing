@@ -1,12 +1,12 @@
-package test.dataTest;
+package dataTest;
 
-import data.exceptions.*;
 import data.VehicleID;
+import data.exceptions.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests per verificar la classe VehicleID seguint la estructura JUnit 5.
+ * Tests per verificar la classe VehicleID seguint l'estructura JUnit 5.
  */
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
