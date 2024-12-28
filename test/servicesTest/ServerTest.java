@@ -4,7 +4,9 @@ import data.GeographicPoint;
 import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
+import data.ServiceID;
 import micromobility.JourneyService;
+import micromobility.payment.*;
 import org.junit.jupiter.api.*;
 import services.ServerImpl;
 import services.exceptions.*;
@@ -40,16 +42,6 @@ class ServerTest {
         server.registerLocation(vehicleID, stationID); // Registra el vehicle a l'estació
         server.stationGPs.put(stationID, stationLocation); // Afegir la ubicació de l'estació
         server.vehicleAvailability.put(vehicleID, true); // El vehicle està disponible
-    }
-
-    @AfterEach
-    void tearDown() {
-        // Netejar l'estat després de cada test
-        server = null;
-        vehicleID = null;
-        userAccount = null;
-        stationID = null;
-        stationLocation = null;
     }
 
     @Test
@@ -122,6 +114,46 @@ class ServerTest {
         // Comprovem que el vehicle ja no està emparellat i que està disponible
         assertNull(server.activePairings.get(vehicleID));
         assertTrue(server.vehicleAvailability.get(vehicleID));
+    }
+
+    @Test
+    void testRegisterPayment_successfulWalletPayment() throws Exception {
+        BigDecimal imp = new BigDecimal("50.00");
+        char payMeth = 'W';
+        server.registerPayment(new ServiceID("SE000001"), userAccount, imp, payMeth);
+        assertTrue(server.paymentsDB.containsKey(new ServiceID("SE000001")));
+        assertTrue(server.paymentsDB.get(new ServiceID("SE000001")) instanceof WalletPayment);
+    }
+
+    @Test
+    void testRegisterPayment_serviceIDIsNull() {
+        BigDecimal imp = new BigDecimal("50.00");
+        char payMeth = 'W';
+        assertThrows(ConnectException.class, () -> server.registerPayment(null, userAccount, imp, payMeth));
+    }
+
+    @Test
+    void testRegisterPayment_userAccountIsNull() {
+        BigDecimal imp = new BigDecimal("50.00");
+        char payMeth = 'W';
+        assertThrows(ConnectException.class, () -> server.registerPayment(new ServiceID("SE000001"), null, imp, payMeth));
+    }
+
+    @Test
+    void testRegisterPayment_methodNotSupported() {
+        BigDecimal imp = new BigDecimal("50.00");
+        char payMeth = 'C';
+        assertThrows(MethodNotSupportedException.class, () -> server.registerPayment(new ServiceID("SE000001"), userAccount, imp, payMeth));
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Netejar l'estat després de cada test
+        server = null;
+        vehicleID = null;
+        userAccount = null;
+        stationID = null;
+        stationLocation = null;
     }
 
     @AfterAll
