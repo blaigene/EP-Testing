@@ -3,6 +3,10 @@ package micromobility;
 import data.GeographicPoint;
 import data.StationID;
 import micromobility.exceptions.*;
+import micromobility.payment.Wallet;
+import micromobility.payment.WalletPayment;
+
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
@@ -49,5 +53,24 @@ public class JourneyRealizeHandler {
 
     private void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
         // Càlcul de l'import del servei
+    }
+
+    public void selectPaymentMethod(char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
+        if (opt == 'W') { // Wallet
+            BigDecimal journeyCost = new BigDecimal(service.getImportCost());
+            try {
+                realizePayment(journeyCost);
+            } catch (NotEnoughWalletException e) {
+                throw new NotEnoughWalletException("Saldo insuficient per realitzar el pagament.");
+            }
+        } else {
+            throw new ProceduralException("Método de pago no soportado.");
+        }
+    }
+
+    private void realizePayment (BigDecimal imp) {
+        Wallet fakeWallet = new Wallet(new BigDecimal(200));
+        WalletPayment payment = new WalletPayment('W', service.getUserAccount(), imp, fakeWallet);
+        payment.processPayment();
     }
 }

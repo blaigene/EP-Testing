@@ -1,9 +1,9 @@
 package services;
 
-import data.GeographicPoint;
-import data.StationID;
-import data.UserAccount;
-import data.VehicleID;
+import data.*;
+import micromobility.payment.Payment;
+import micromobility.payment.Wallet;
+import micromobility.payment.WalletPayment;
 import services.exceptions.*;
 import micromobility.JourneyService;
 
@@ -20,6 +20,7 @@ public class ServerImpl implements Server {
     public Map<VehicleID, UserAccount> activePairings = new HashMap<>();
     public Map<StationID, GeographicPoint> stationGPs = new HashMap<>();
     public Map<StationID, VehicleID> vehiclesInStation = new HashMap<>();
+    public Map<ServiceID, Payment> paymentsDB = new HashMap<>();
 
     @Override
     public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
@@ -104,5 +105,21 @@ public class ServerImpl implements Server {
     public void registerLocation(VehicleID veh, StationID st) {
         // Aquest mètode registra la nova ubicació del vehicle.
         vehiclesInStation.put(st, veh);
+    }
+
+    public void registerPayment(ServiceID servID, UserAccount user, BigDecimal imp, char payMeth) throws
+            ConnectException, MethodNotSupportedException {
+        // Comprovar si existeix el servei
+        if (servID == null || user == null) {
+            throw new ConnectException("No s'ha pogut connectar amb el servidor per enregistrar el pagament.");
+        }
+
+        if (payMeth == 'W') { // Wallet
+            Wallet fakeWallet = new Wallet(new BigDecimal(200));
+            WalletPayment payment = new WalletPayment(payMeth, user, imp, fakeWallet);
+            paymentsDB.put(servID, payment);
+        } else {
+            throw new MethodNotSupportedException("Mètode no implementat.");
+        }
     }
 }
