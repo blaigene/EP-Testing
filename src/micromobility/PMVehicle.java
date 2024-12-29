@@ -1,6 +1,7 @@
 package micromobility;
 
 import data.GeographicPoint;
+import data.StationID;
 import data.VehicleID;
 import micromobility.exceptions.*;
 import java.awt.image.BufferedImage;
@@ -63,7 +64,9 @@ public class PMVehicle {
 
     public String getUsername() { return username; }
 
-    public String getStationID() { return stationID; }
+    public StationID getStationID() {
+        return new StationID(stationID);
+    }
 
     public void setNotAvailble() {
         this.state = PMVState.NotAvailable;

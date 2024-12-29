@@ -2,6 +2,7 @@ package micromobility;
 
 import data.GeographicPoint;
 import data.StationID;
+import data.VehicleID;
 import micromobility.exceptions.*;
 import micromobility.payment.Wallet;
 import micromobility.payment.WalletPayment;
@@ -26,8 +27,9 @@ public class JourneyRealizeHandler {
     private static Server server;
     private UnbondedBTSignal btSignal;
     private StationID stationID;
+    private boolean isConnected;
 
-    public JourneyRealizeHandler(Server serverMock, PMVehicle vehicle, JourneyService service) {
+    public JourneyRealizeHandler(Server server, PMVehicle vehicle, JourneyService service, QRDecoder qrDecoder, UnbondedBTSignal btSignal, StationID stationID) {
         this.vehicle = vehicle;
         this.service = service;
         this.qrDecoder = qrDecoder;
@@ -36,27 +38,11 @@ public class JourneyRealizeHandler {
         this.stationID = stationID;
     }
 
-    /**
-     * Escanea un código QR para iniciar un proceso de emparejamiento de vehículo.
-     *
-     * @param qrCode el código QR a escanear
-     * @throws ConnectException si no se puede conectar al servidor
-     * @throws InvalidPairingArgsException si el ID del vehículo obtenido no coincide
-     * @throws CorruptedImgException si el código QR está corrupto
-     * @throws PMVNotAvailException si el vehículo no está disponible
-     * @throws ProceduralException si ocurre un error de procedimiento no especificado
-     */
-
-    public void scanQR(String qrCode) throws ConnectException, InvalidPairingArgsException,
-            CorruptedImgException, PMVNotAvailException {
-        if (!server.isConnected()) {
-            throw new ConnectException("No se puede conectar al servidor.");
-        }
-
+    public void scanQR(String qrCode) throws InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException, ConnectException {
         String vehicleID;
         try {
             vehicleID = qrDecoder.decodeQR(qrCode);
-        } catch (Exception e) {
+        } catch (Exception  e) {
             throw new CorruptedImgException("Error al decodificar el código QR.", e);
         }
 
@@ -64,48 +50,68 @@ public class JourneyRealizeHandler {
             throw new InvalidPairingArgsException("El ID del vehículo obtenido del QR no coincide con el ID del vehículo registrado.");
         }
 
-        boolean isAvailable = server.checkPMVAvail(vehicle.getVehicleID());  // Supongamos que retorna un booleano
+        VehicleID id = new VehicleID(vehicleID);  // Suponiendo que VehicleID es una clase que encapsula el ID del vehículo.
+        boolean isAvailable = false;  // Asumiendo que el método espera una instancia de VehicleID
+        try {
+            server.checkPMVAvail(id);
+        } catch (services.exceptions.PMVNotAvailException e) {
+            throw new RuntimeException(e);
+        } catch (ConnectException e) {
+            throw new RuntimeException(e);
+        }
         if (!isAvailable) {
-            throw new PMVNotAvailException("El vehículo con ID " + vehicle.getVehicleID() + " no está disponible.");
+            throw new PMVNotAvailException("El vehículo con ID " + vehicleID + " no está disponible.");
         }
 
         vehicle.setNotAvailble();  // Marca el vehículo como no disponible
-        server.registerPairing(service.getUserAccount(), vehicle.getVehicleID(), new StationID("ST123456"), service.getOriginPoint(), LocalDateTime.now());
     }
 
-    public void unPairVehicle() throws ConnectException, ProceduralException {
-        if (!server.isConnected()) {
-            throw new ConnectException("No se puede conectar al servidor.");
+    public void unPairVehicle() throws ConnectException, ProceduralException, InvalidPairingArgsException, PairingNotFoundException {
+        if (!service.isInProgress() || !vehicle.getState().equals(PMVState.UnderWay)) {
+            throw new ProceduralException("Precondiciones no cumplidas para desvincular el vehículo.");
         }
 
+        // Propaga estas excepciones específicas si ocurrieron
         try {
-            // Marcar el servicio como finalizado y el vehículo como disponible
-            vehicle.setAvailble();
-            service.setServiceFinish();
+            // Establecer la hora y fecha de finalización del viaje
+            LocalDateTime now = LocalDateTime.now();
+            service.setEndDate();
+            service.setEndHour();
+
+            // Calcular y actualizar los valores de distancia, duración y velocidad promedio
+            calculateValues(service.getEndPoint(), now);
+            calculateImport(service.getDistance(), service.getDuration(), service.getAvgSpeed(), now);
+
+            // Actualizar el estado del vehículo y concluir el servicio en el servidor
+            vehicle.setAvailble();  // Asegúrate de que el método se llame correctamente
+            vehicle.setLocation(service.getEndPoint());
 
             // Registrar la finalización del emparejamiento y del servicio en el servidor
-            server.stopPairing(service.getUserAccount(), vehicle.getVehicleID(), service.getStationID(stationID),
-                    service.getEndPoint(), service.getEndDate(), service.getAvgSpeed(),
+            server.stopPairing(service.getUserAccount(), vehicle.getVehicleID(), vehicle.getStationID(),
+                    service.getEndPoint(), LocalDateTime.from(service.getEndDate()), service.getAvgSpeed(),
                     service.getDistance(), service.getDuration(), BigDecimal.valueOf(service.getImportCost()));
-        } catch (Exception e) {
-            throw new ProceduralException("Error durante la finalización del servicio: " + e.getMessage());
+
+            // Desvincular el vehículo en el sistema y en el servidor
+            server.unPairRegisterService(service);
+
+        } catch (ConnectException e) {
+            throw new ProceduralException("Error durante la finalización del servicio: " + e.getMessage(), e);
+        } catch (services.exceptions.InvalidPairingArgsException e) {
+            throw new ProceduralException("Error durante la finalización del servicio: " + e.getMessage(), e);
+        } catch (services.exceptions.PairingNotFoundException e) {
+            throw new ProceduralException("Error durante la finalización del servicio: " + e.getMessage(), e);
+        } finally {
+            service.setServiceFinish(); // Asegura que el estado se marca como no en progreso
         }
     }
 
-    /**
-     * Simula la recepción del ID de la estación por Bluetooth y maneja la conexión.
-     *
-     * @param stationID El ID de la estación que se recibe.
-     * @throws ConnectException Si hay un fallo en la conexión que impide la recepción del ID.
-     */
-    public static void broadcastStationID(StationID stationID) throws ConnectException {
-        if (!server.isConnected()) {
-            throw new ConnectException("No se puede conectar al servidor para recibir el ID de la estación.");
-        }
 
-        // Emula la recepción del ID de la estación a través del canal Bluetooth
-        server.broadcastStationID(stationID);
-        System.out.println("ID de estación recibido correctamente: " + stationID.getId());
+    // Método que gestiona la recepción del ID de estación vía Bluetooth
+    public static void broadcastStationID(StationID stID) throws ConnectException {
+        if (stID == null) {
+            throw new ConnectException("Error: No se recibió ningún ID de estación.");
+        }
+        System.out.println("ID de estación recibido correctamente: " + stID.getId());
     }
 
     /**
@@ -115,14 +121,18 @@ public class JourneyRealizeHandler {
      * @throws ProceduralException si ocurre un error durante la configuración del desplazamiento.
      */
     public void startDriving() throws ConnectException, ProceduralException {
-        if (!server.isConnected()) {
-            throw new ConnectException("No se puede conectar al servidor para iniciar el desplazamiento.");
+
+        isConnected = true; //se conecta correctamente
+
+        // Verificar que el vehículo está correctamente vinculado y preparado
+        if (!vehicle.getState().equals(PMVState.NotAvailable) || service == null) {
+            throw new ProceduralException("Precondiciones no cumplidas para iniciar el desplazamiento.");
         }
 
         try {
-            vehicle.setUnderWay();  // Marca el vehículo como en movimiento
-            service.setServiceInit();  // Registra el inicio del servicio en el sistema
-            server.startJourney(vehicle.getVehicleID(), service.getServiceID());  // Envía datos al servidor
+            vehicle.setUnderWay();  // Cambia el estado del vehículo a 'En movimiento'
+            service.setServiceInit();  // Indica que el servicio está en progreso
+
             System.out.println("Desplazamiento iniciado correctamente.");
         } catch (Exception e) {
             throw new ProceduralException("Error al iniciar el desplazamiento: " + e.getMessage(), e);
@@ -136,19 +146,26 @@ public class JourneyRealizeHandler {
      * @throws ProceduralException si ocurre un error durante la finalización del desplazamiento.
      */
     public void stopDriving() throws ConnectException, ProceduralException {
-        if (!server.isConnected()) {
-            throw new ConnectException("No se puede conectar al servidor para detener el desplazamiento.");
+        // Verificación de la conexión servidor
+        if (!isConnected) {
+            throw new ConnectException("No es pot connectar al servidor");
+        }
+
+        // Asegurar que el vehículo está en movimiento y que el servicio está activo
+        if (!vehicle.getState().equals(PMVState.UnderWay) || !service.isInProgress()) {
+            throw new ProceduralException("El vehículo no está en movimiento o el servicio no está activo.");
         }
 
         try {
-            vehicle.setAvailble();  // Marca el vehículo como disponible
+            // Solo marca el servicio como terminado, no cambia el estado del vehículo aún
             service.setServiceFinish();  // Registra la finalización del servicio en el sistema
-            server.endJourney(vehicle.getVehicleID(), service.getServiceID(), service.getEndPoint(), service.getEndDate(), (float) service.getAvgSpeed(), (float) service.getDistance(), service.getDuration(), BigDecimal.valueOf(service.getImportCost()));  // Envía datos al servidor
+
             System.out.println("Desplazamiento detenido correctamente.");
         } catch (Exception e) {
             throw new ProceduralException("Error al detener el desplazamiento: " + e.getMessage(), e);
         }
     }
+
 
     /**
      * Calcula los valores relativos al trayecto: duración, distancia y velocidad promedio.
@@ -172,7 +189,7 @@ public class JourneyRealizeHandler {
         service.setAvgSpeed(avgSpeed);
     }
 
-    public void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
+    public void calculateImport(double dis, int dur, double avSp, LocalDateTime date) {
         double baseRate = 2.0; // Tarifa base, por ejemplo 2 euros
         double ratePerKm = 0.50; // Tarifa por kilómetro, por ejemplo 0.50 euros
         double ratePerMinute = 0.10; // Tarifa por minuto, por ejemplo 0.10 euros

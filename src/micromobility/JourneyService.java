@@ -1,8 +1,6 @@
 package micromobility;
 
 import micromobility.exceptions.*;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,7 +40,8 @@ public class JourneyService {
 
         this.journeyId = journeyId;
         this.serviceID = serviceID;
-        setInitDate(LocalDateTime.now().minusHours(2));
+
+        setInitDate();
         setInitHour();
     }
 
@@ -53,7 +52,6 @@ public class JourneyService {
     public String getServiceID() {
         return serviceID;
     }
-    
 
     public LocalDate getInitDate() {
         return initDate;
@@ -68,11 +66,11 @@ public class JourneyService {
     }
 
     public double getDistance() {
-        return (float) distance;
+        return distance;
     }
 
     public double getAvgSpeed() {
-        return (float) avgSpeed;
+        return avgSpeed;
     }
 
     public GeographicPoint getOriginPoint() {
@@ -83,8 +81,8 @@ public class JourneyService {
         return endPoint;
     }
 
-    public LocalDateTime getEndDate() {
-        return endDate.atStartOfDay();
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
     public LocalTime getEndHour() {
@@ -92,12 +90,12 @@ public class JourneyService {
     }
 
     public double getImportCost() {
-        return (importCost);
+        return importCost;
     }
 
     public boolean isInProgress() {
         return inProgress;
-    }        
+    }
 
     public UserAccount getUserAccount() {
         return userAccount;
@@ -115,7 +113,7 @@ public class JourneyService {
         this.inProgress = false;
     }
 
-    public void setInitDate(LocalDateTime localDateTime) {
+    public void setInitDate() {
         this.initDate = LocalDate.now();
     }
 
@@ -138,10 +136,10 @@ public class JourneyService {
             throw new DataInconsistencyException("L'hora de finalització ha de ser posterior a l'hora d'inici.");
         }
         this.endHour = provHour;
-        setDuration((int) minutesBetween);
+        setDuration();
     }
 
-    public void setDuration(int minutesBetween) {
+    public void setDuration() {
         if (initDate == null || initHour == null || endDate == null || endHour == null) {
             throw new DataInconsistencyException("Les dades d'inici i finalització han d'estar configurades abans de calcular la duració.");
         }
@@ -155,17 +153,20 @@ public class JourneyService {
 
         this.duration = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
     }
-    
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 
     public void setDistance(double distance) {
         if (distance < 0) {
             throw new NegativeDistanceException("La distància no pot ser negativa.");
         }
         this.distance = distance;
-        setAvgSpeed(distance / (minutesBetween / 60.0));
+        setAvgSpeed(avgSpeed);
     }
 
-    public void setAvgSpeed(double v) {
+    public void setAvgSpeed(double avgSpeed) {
         if (distance <= 0) {
             throw new NegativeDistanceException("La distància ha de ser superior a 0 per calcular la velocitat mitjana.");
         }
@@ -242,11 +243,5 @@ public class JourneyService {
                 ", vehicleID='" + vehicleID + '\'' +
                 '}';
     }
-
-    public StationID getStationID(StationID stationID) {
-        return stationID;
-        
-    }
 }
-
 

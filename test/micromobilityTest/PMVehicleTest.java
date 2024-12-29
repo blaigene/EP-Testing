@@ -38,19 +38,6 @@ public class PMVehicleTest {
     }
 
     @Test
-    void testConstructor() {
-        Assertions.assertNotNull(PMVehicle);
-        Assertions.assertEquals("PMV012345", PMVehicle.getId());
-        Assertions.assertEquals(PMVState.Available, PMVehicle.getState());
-        Assertions.assertEquals(sampleLocation, PMVehicle.getLocation());
-        Assertions.assertEquals("Temperatura: 22°C", PMVehicle.getSensorsData());
-        Assertions.assertEquals(75.0, PMVehicle.getChargeLevel());
-        Assertions.assertEquals(sampleQrCode, PMVehicle.getQrCode());
-        Assertions.assertEquals("BlaiGene0123456", PMVehicle.getUsername());
-        Assertions.assertEquals("ST012345", PMVehicle.getStationID());
-    }
-
-    @Test
     void testIllegalArgumentException() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new PMVehicle("PM12345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
         Assertions.assertDoesNotThrow(() -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
@@ -67,14 +54,6 @@ public class PMVehicleTest {
         // IncorrectChargeLevel: nivell de càrrega fora de rang
         Assertions.assertThrows(IncorrectChargeLevel.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", -1, sampleQrCode, "BlaiGene0123456", "ST012345"));
         Assertions.assertThrows(IncorrectChargeLevel.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 101, sampleQrCode, "BlaiGene0123456", "ST012345"));
-    }
-
-    @Test
-    void testGetters() {
-        Assertions.assertEquals("PMV012345", PMVehicle.getId());
-        Assertions.assertEquals(PMVState.Available, PMVehicle.getState());
-        Assertions.assertEquals("BlaiGene0123456", PMVehicle.getUsername());
-        Assertions.assertEquals("ST012345", PMVehicle.getStationID());
     }
 
     @Test

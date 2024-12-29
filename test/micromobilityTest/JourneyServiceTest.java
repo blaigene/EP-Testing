@@ -82,7 +82,7 @@ public class JourneyServiceTest {
     void testAvgSpeedValid() {
         journeyService.duration = 60;
         journeyService.setDistance(15.0);
-        journeyService.setAvgSpeed(distance / (minutesBetween / 60.0));
+        journeyService.setAvgSpeed(journeyService.getAvgSpeed());
         Assertions.assertEquals(15.0, journeyService.getAvgSpeed());
     }
 
@@ -187,4 +187,3 @@ public class JourneyServiceTest {
         System.out.println("Finalitzant proves de JourneyService...");
     }
 }
-
