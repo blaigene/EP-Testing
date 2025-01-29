@@ -17,6 +17,11 @@ public class QRDecoderImpl implements QRDecoder {
         return null;
     }
 
+    @Override
+    public String decodeQR(String qrCode) {
+        return "";
+    }
+
     public void setCorrupted(boolean isCorrupted) {
         this.isCorrupted = isCorrupted;
     }

@@ -23,10 +23,10 @@ class PaymentTest {
 
     @BeforeEach
     void setUp() {
-        // Inicialitzem el saldo inicial del moneder i l'usuari abans de cada test
-        initialBalance = new BigDecimal("100.00");
-        wallet = new Wallet(initialBalance);
-        user = new UserAccount("john_doe");
+        // Inicializamos el saldo inicial del monedero y el usuario antes de cada test
+        initialBalance = new BigDecimal("100.00");  // Establecemos un saldo inicial para el monedero
+        wallet = new Wallet(initialBalance);  // Creamos un nuevo monedero con el saldo inicial
+        user = new UserAccount("john.doe1234567");  // Crear un usuario con un nombre que cumpla con los 15 caracteres requeridos
     }
 
     @Test
