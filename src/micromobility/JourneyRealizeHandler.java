@@ -47,24 +47,48 @@ public class JourneyRealizeHandler {
     }
 
     public void unPairVehicle() throws ConnectException, ProceduralException {
-
+        calculateValues(vehicle.getLocation(), service.getInitDateTime());
+        calculateImport(service.getDistance(), service.getDuration(), service.getAvgSpeed(), service.getInitDateTime());
+        server.stopPairing(vehicle.getUser(), vehicle.getVehicleID(), vehicle.getStationID(), vehicle.getLocation(),
+                service.getInitDateTime(), service.getAvgSpeed(), service.getDistance(), service.getDuration(),
+                service.getImportCost());
+        vehicle.setAvailable();
+        System.out.println("Ok desemparejamiento, importe, selecciona método pago.");
     }
 
 
     public static void broadcastStationID(StationID stationID) throws ConnectException {
-
+        try {
+            System.out.println("Estación identificada.");
+        } catch (Exception e) {
+            throw new ConnectException("No se pudo encontrar la estación.");
+        }
     }
 
 
     public void startDriving() throws ConnectException, ProceduralException {
-
+        vehicle.setUnderWay();
+        System.out.println("Pantalla de trayecto en curso.");
     }
 
 
     public void stopDriving() throws ConnectException, ProceduralException {
+        if (!service.isInProgress()) {
+            throw new ProceduralException("El viaje no está en progreso.");
+        }
 
+        if (!vehicle.getState().equals(PMVState.UnderWay)) {
+            throw new ProceduralException("El vehiculo no está siendo utilizado");
+        }
+
+        try {
+            System.out.println("Pantalla de vehículo detenido.");
+        } catch (Exception e) {
+            throw new ConnectException("No se pudo conectar con el vehículo.");
+        }
     }
 
+    // Operacions internes
 
     public void calculateValues(GeographicPoint gP, LocalDateTime date) {
 
@@ -75,12 +99,12 @@ public class JourneyRealizeHandler {
     }
 
     public void selectPaymentMethod(char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
-        if (opt == 'w') {
-            BigDecimal journeyCost = new BigDecimal(this.service.getImportCost());
+        if (opt == 'W') {
+            BigDecimal importCost = new BigDecimal(service.getImportCost());
 
             try {
-                this.realizePayment(journeyCost);
-            } catch (NotEnoughWalletException var4) {
+                realizePayment(importCost);
+            } catch (NotEnoughWalletException e) {
                 throw new NotEnoughWalletException("Saldo insuficient per realitzar el pagament.");
             }
         } else {
