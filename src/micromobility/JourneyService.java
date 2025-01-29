@@ -1,9 +1,7 @@
 package micromobility;
 
 import micromobility.exceptions.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import data.*;
 
@@ -12,15 +10,13 @@ import data.*;
  */
 public class JourneyService {
     private final String journeyId;
-    private LocalDate initDate;
-    private LocalTime initHour;
+    private LocalDateTime initDateTime;
     public int duration; // en minuts
     private double distance; // en quilòmetres
     private double avgSpeed; // en km/h
     private GeographicPoint originPoint;
     private GeographicPoint endPoint;
-    private LocalDate endDate;
-    private LocalTime endHour;
+    private LocalDateTime endDateTime;
     private double importCost;
     private final String serviceID;
     private boolean inProgress;
@@ -40,8 +36,7 @@ public class JourneyService {
 
         this.journeyId = journeyId;
         this.serviceID = serviceID;
-        setInitDate();
-        setInitHour();
+        setInitDateTime();
     }
 
     public String getJourneyId() {
@@ -52,12 +47,8 @@ public class JourneyService {
         return serviceID;
     }
 
-    public LocalDate getInitDate() {
-        return initDate;
-    }
-
-    public LocalTime getInitHour() {
-        return initHour;
+    public LocalDateTime getInitDateTime() {
+        return initDateTime;
     }
 
     public int getDuration() {
@@ -80,12 +71,8 @@ public class JourneyService {
         return endPoint;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public LocalTime getEndHour() {
-        return endHour;
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
     }
 
     public double getImportCost() {
@@ -112,45 +99,28 @@ public class JourneyService {
         this.inProgress = false;
     }
 
-    public void setInitDate() {
-        this.initDate = LocalDate.now();
+    public void setInitDateTime() {
+        this.initDateTime = LocalDateTime.now();
     }
 
-    public void setInitHour() {
-        this.initHour = LocalTime.now();
-    }
-
-    public void setEndDate() {
-        LocalDate provDate = LocalDate.now();
-        if (initDate != null && provDate.isBefore(initDate)) {
+    public void setEndDateTime() {
+        LocalDateTime provDate = LocalDateTime.now();
+        if (initDateTime != null && provDate.isBefore(initDateTime)) {
             throw new DataInconsistencyException("La data de finalització ha de ser posterior o igual a la data d'inici.");
         }
-        this.endDate = provDate;
-    }
-
-    public void setEndHour() {
-        LocalTime provHour = LocalTime.now();
-        if (endDate != null && initDate != null && initHour != null
-                && endDate.equals(initDate) && provHour.isBefore(initHour)) {
-            throw new DataInconsistencyException("L'hora de finalització ha de ser posterior a l'hora d'inici.");
-        }
-        this.endHour = provHour;
-        setDuration();
+        this.endDateTime = provDate;
     }
 
     public void setDuration() {
-        if (initDate == null || initHour == null || endDate == null || endHour == null) {
+        if (initDateTime == null || endDateTime == null) {
             throw new DataInconsistencyException("Les dades d'inici i finalització han d'estar configurades abans de calcular la duració.");
         }
 
-        LocalDateTime startDateTime = LocalDateTime.of(initDate, initHour);
-        LocalDateTime endDateTime = LocalDateTime.of(endDate, endHour);
-
-        if (endDateTime.isBefore(startDateTime)) {
+        if (endDateTime.isBefore(initDateTime)) {
             throw new DataInconsistencyException("La data i hora de finalització han de ser posteriors a la data i hora d'inici.");
         }
 
-        this.duration = (int) ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+        this.duration = (int) ChronoUnit.MINUTES.between(initDateTime, endDateTime);
     }
 
     public void setDuration(int duration) {
@@ -226,15 +196,13 @@ public class JourneyService {
     public String toString() {
         return "JourneyService{" +
                 "journeyId='" + journeyId + '\'' +
-                ", initDate=" + initDate +
-                ", initHour=" + initHour +
+                ", initDate=" + initDateTime +
                 ", duration=" + duration +
                 ", distance=" + distance +
                 ", avgSpeed=" + avgSpeed +
                 ", originPoint='" + originPoint + '\'' +
                 ", endPoint='" + endPoint + '\'' +
-                ", endDate=" + endDate +
-                ", endHour=" + endHour +
+                ", endDate=" + endDateTime +
                 ", importCost=" + importCost +
                 ", serviceID='" + serviceID + '\'' +
                 ", inProgress=" + inProgress +

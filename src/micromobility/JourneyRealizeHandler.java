@@ -7,14 +7,12 @@ import micromobility.exceptions.*;
 import micromobility.payment.Wallet;
 import micromobility.payment.WalletPayment;
 import services.Server;
+import services.ServerImpl;
 import services.smartfeatures.*;
 
-
-import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 
 public class JourneyRealizeHandler {
@@ -22,30 +20,30 @@ public class JourneyRealizeHandler {
     private PMVehicle vehicle;
     private JourneyService service;
     private QRDecoder qrDecoder;
-    private static Server server;
+    private Server server;
     private UnbondedBTSignal btSignal;
     private ArduinoMicroController amc;
-    private StationID stationID;
-    private VehicleID vehicleID;
 
     public JourneyRealizeHandler() {
-        this.vehicle = new PMVehicle();
-        this.service = service;
+        /**this.vehicle = new PMVehicle();
+        this.service = new JourneyService();
         this.qrDecoder = new QRDecoderImpl();
-        this.server = server;
+        this.server = new ServerImpl();
         this.btSignal = new UnbondedBTSignalImpl();
-        this.stationID = stationID;
+        this.amc = new ArduinoMicroControllerImpl();**/
     }
 
 
 
     public void scanQR() throws ConnectException, InvalidPairingArgsException,
-            CorruptedImgException, PMVNotAvailException {
-        vehicleID = qrDecoder.getVehicleID(new BufferedImage());
+            CorruptedImgException, PMVNotAvailException, ProceduralException {
+        VehicleID vehicleID = qrDecoder.getVehicleID(vehicle.getQrCode());
         server.checkPMVAvail(vehicleID);
         amc.setBTconnection();
-        vehicle.setNotAvailble();
-        server.registerPairing();
+        vehicle.setNotAvailable();
+        server.registerPairing(vehicle.getUser(), vehicle.getVehicleID(), vehicle.getStationID(),
+                vehicle.getLocation(), service.getInitDateTime());
+        System.out.println("Ok emparejamiento, se puede iniciar trayecto.");
     }
 
     public void unPairVehicle() throws ConnectException, ProceduralException {

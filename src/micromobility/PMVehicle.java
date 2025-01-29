@@ -2,6 +2,7 @@ package micromobility;
 
 import data.GeographicPoint;
 import data.StationID;
+import data.UserAccount;
 import data.VehicleID;
 import micromobility.exceptions.*;
 import java.awt.image.BufferedImage;
@@ -10,36 +11,30 @@ import java.awt.image.BufferedImage;
  * Classe que representa un PMVehicle.
  */
 public class PMVehicle {
-    private String id;
+    private VehicleID vehicleID;
     private PMVState state;
     private GeographicPoint location;
     private String sensorsData;
     private double chargeLevel;
     private BufferedImage qrCode;
-    private String username; //
-    private String stationID; //
+    private UserAccount user; //
+    private StationID stationID; //
     
-    public PMVehicle(String id, GeographicPoint location, String sensorsData, double chargeLevel, BufferedImage qrCode, String username, String stationID) {
+    public PMVehicle(VehicleID vehicleID, GeographicPoint location, String sensorsData,
+                     double chargeLevel, BufferedImage qrCode, UserAccount user, StationID stationID) {
 
-        if (!id.matches("PMV[0-9]{6}")) {
-            throw new IllegalArgumentException("L'identificador del vehicle ha de seguir el patró 'PMVxxxxxx' (6 dígits).");
-        }
         if (chargeLevel < 0 || chargeLevel > 100) {
             throw new IncorrectChargeLevel("Nivell de càrrega ha de ser entre 0 i 100");
         }
 
-        this.id = id;
+        this.vehicleID = vehicleID;
         this.location = location;
         this.state = PMVState.Available;
         this.sensorsData = sensorsData;
         this.chargeLevel = chargeLevel;
         this.qrCode = qrCode;
-        this.username = username;
+        this.user = user;
         this.stationID = stationID;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public PMVState getState() {
@@ -62,13 +57,13 @@ public class PMVehicle {
         return qrCode;
     }
 
-    public String getUsername() { return username; }
+    public UserAccount getUser() { return user; }
 
     public StationID getStationID() {
-        return new StationID(stationID);
+        return stationID;
     }
 
-    public void setNotAvailble() {
+    public void setNotAvailable() {
         this.state = PMVState.NotAvailable;
     }
 
@@ -76,13 +71,11 @@ public class PMVehicle {
         this.state = PMVState.UnderWay;
     }
 
-    public void setAvailble() {
+    public void setAvailable() {
         this.state = PMVState.Available;
     }
 
-    public VehicleID getVehicleID() {
-        return new VehicleID(id);
-    }
+    public VehicleID getVehicleID() { return vehicleID; }
 
     public void setTemporaryParking() {
         this.state = PMVState.TemporaryParking;  // Asigna el estado a TemporaryParking
@@ -95,13 +88,13 @@ public class PMVehicle {
     @Override
     public String toString() {
         return "PMVehicle{" +
-                "id='" + id + '\'' +
+                "id='" + vehicleID + '\'' +
                 ", state=" + state +
                 ", location=" + location +
                 ", sensorsData='" + sensorsData + '\'' +
                 ", chargeLevel=" + chargeLevel +
                 ", qrCode=" + (qrCode != null ? "present" : "not present") +
-                ", username='" + username + '\'' +
+                ", username='" + user + '\'' +
                 ", stationID='" + stationID + '\'' +
                 '}';
     }
