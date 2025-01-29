@@ -16,11 +16,19 @@ import java.util.Map;
 public class ServerImpl implements Server {
 
     // Simulació d'una base de dades en memòria per emmagatzemar l'estat dels vehicles i els emparellaments.
-    public Map<VehicleID, Boolean> vehicleAvailability = new HashMap<>();
-    public Map<VehicleID, UserAccount> activePairings = new HashMap<>();
-    public Map<StationID, GeographicPoint> stationGPs = new HashMap<>();
-    public Map<StationID, VehicleID> vehiclesInStation = new HashMap<>();
-    public Map<ServiceID, Payment> paymentsDB = new HashMap<>();
+    public Map<VehicleID, Boolean> vehicleAvailability;
+    public Map<VehicleID, UserAccount> activePairings;
+    public Map<StationID, GeographicPoint> stationGPs;
+    public Map<StationID, VehicleID> vehiclesInStation;
+    public Map<ServiceID, Payment> paymentsDB;
+
+    public ServerImpl() {
+        vehicleAvailability = new HashMap<>();
+        activePairings = new HashMap<>();
+        stationGPs = new HashMap<>();
+        vehiclesInStation = new HashMap<>();
+        paymentsDB = new HashMap<>();
+    }
 
     @Override
     public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {

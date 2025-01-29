@@ -6,9 +6,15 @@ import java.net.ConnectException;
 
 public class ArduinoMicroControllerImpl implements ArduinoMicroController {
 
-    private boolean isBTConnected = false;
-    private boolean isDriving = false;
-    private boolean vehicleHasIssues = false;
+    private boolean isBTConnected;
+    private boolean isDriving;
+    private boolean vehicleHasIssues;
+
+    public ArduinoMicroControllerImpl() {
+        isBTConnected = false;
+        isDriving = false;
+        vehicleHasIssues = false;
+    }
 
     @Override
     public void setBTconnection() throws ConnectException {

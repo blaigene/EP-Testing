@@ -8,7 +8,11 @@ import micromobility.JourneyRealizeHandler;
 
 public class UnbondedBTSignalImpl implements UnbondedBTSignal {
 
-    private StationID fakeStationID = new StationID("ST123456");
+    private final StationID fakeStationID;
+
+    public UnbondedBTSignalImpl() {
+        fakeStationID = new StationID("ST123456");
+    }
 
     @Override
     public void BTbroadcast() throws ConnectException {
