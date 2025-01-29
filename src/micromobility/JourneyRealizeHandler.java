@@ -49,7 +49,7 @@ public class JourneyRealizeHandler {
 
     public void scanQR(String qrCode) throws ConnectException, InvalidPairingArgsException,
             CorruptedImgException, PMVNotAvailException {
-        if (!server.isConnected()) {
+        /**if (!server.isConnected()) {
             throw new ConnectException("No se puede conectar al servidor.");
         }
 
@@ -70,11 +70,11 @@ public class JourneyRealizeHandler {
         }
 
         vehicle.setNotAvailble();  // Marca el vehículo como no disponible
-        server.registerPairing(service.getUserAccount(), vehicle.getVehicleID(), new StationID("ST123456"), service.getOriginPoint(), LocalDateTime.now());
+        server.registerPairing(service.getUserAccount(), vehicle.getVehicleID(), new StationID("ST123456"), service.getOriginPoint(), LocalDateTime.now());*/
     }
 
     public void unPairVehicle() throws ConnectException, ProceduralException {
-        if (!server.isConnected()) {
+        /**if (!server.isConnected()) {
             throw new ConnectException("No se puede conectar al servidor.");
         }
 
@@ -89,7 +89,7 @@ public class JourneyRealizeHandler {
                     service.getDistance(), service.getDuration(), BigDecimal.valueOf(service.getImportCost()));
         } catch (Exception e) {
             throw new ProceduralException("Error durante la finalización del servicio: " + e.getMessage());
-        }
+        }*/
     }
 
     /**
@@ -99,13 +99,13 @@ public class JourneyRealizeHandler {
      * @throws ConnectException Si hay un fallo en la conexión que impide la recepción del ID.
      */
     public static void broadcastStationID(StationID stationID) throws ConnectException {
-        if (!server.isConnected()) {
+        /**if (!server.isConnected()) {
             throw new ConnectException("No se puede conectar al servidor para recibir el ID de la estación.");
         }
 
         // Emula la recepción del ID de la estación a través del canal Bluetooth
         server.broadcastStationID(stationID);
-        System.out.println("ID de estación recibido correctamente: " + stationID.getId());
+        System.out.println("ID de estación recibido correctamente: " + stationID.getId()); */
     }
 
     /**
@@ -115,7 +115,7 @@ public class JourneyRealizeHandler {
      * @throws ProceduralException si ocurre un error durante la configuración del desplazamiento.
      */
     public void startDriving() throws ConnectException, ProceduralException {
-        if (!server.isConnected()) {
+        /**if (!server.isConnected()) {
             throw new ConnectException("No se puede conectar al servidor para iniciar el desplazamiento.");
         }
 
@@ -126,7 +126,7 @@ public class JourneyRealizeHandler {
             System.out.println("Desplazamiento iniciado correctamente.");
         } catch (Exception e) {
             throw new ProceduralException("Error al iniciar el desplazamiento: " + e.getMessage(), e);
-        }
+        }*/
     }
 
     /**
@@ -136,7 +136,7 @@ public class JourneyRealizeHandler {
      * @throws ProceduralException si ocurre un error durante la finalización del desplazamiento.
      */
     public void stopDriving() throws ConnectException, ProceduralException {
-        if (!server.isConnected()) {
+        /**if (!server.isConnected()) {
             throw new ConnectException("No se puede conectar al servidor para detener el desplazamiento.");
         }
 
@@ -147,7 +147,7 @@ public class JourneyRealizeHandler {
             System.out.println("Desplazamiento detenido correctamente.");
         } catch (Exception e) {
             throw new ProceduralException("Error al detener el desplazamiento: " + e.getMessage(), e);
-        }
+        }*/
     }
 
     /**
