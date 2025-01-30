@@ -1,25 +1,26 @@
 package micromobility.payment;
 
+import data.ServiceID;
 import data.UserAccount;
+import micromobility.JourneyService;
 import micromobility.exceptions.NotEnoughWalletException;
-
 import java.math.BigDecimal;
 
 public abstract class Payment {
-    private char payMeth;
+    private ServiceID id;
     private UserAccount user;
     private BigDecimal imp;
 
-    public Payment(char payMeth, UserAccount user, BigDecimal imp) {
-        this.payMeth = payMeth;
+    public Payment(ServiceID id, UserAccount user, BigDecimal imp) {
+        this.id = id;
         this.user = user;
         this.imp = imp;
     }
 
     // Getters
 
-    public char getPayMeth() {
-        return payMeth;
+    public ServiceID getId() {
+        return id;
     }
 
     public UserAccount getUser() {

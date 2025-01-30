@@ -1,11 +1,15 @@
 package data;
 import data.exceptions.*;
+import micromobility.payment.Wallet;
+
+import java.math.BigDecimal;
 
 /**
  * Classe que representa un compte d'usuari.
  */
 final public class UserAccount {
     private final String username;
+    private Wallet wallet;
 
     public UserAccount(String username) {
         if (username == null || username.trim().isEmpty()) {
@@ -15,10 +19,17 @@ final public class UserAccount {
             throw new IllegalArgumentException("El nom d'usuari ha de tenir 15 caràcters (lletres, números, '.', '-', '_').");
         }
         this.username = username;
+        this.wallet = new Wallet(new BigDecimal(0));
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public Wallet getWallet() { return wallet; }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
     @Override

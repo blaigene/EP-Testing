@@ -1,8 +1,6 @@
 package micromobility;
 
-import data.GeographicPoint;
-import data.StationID;
-import data.VehicleID;
+import data.*;
 import micromobility.exceptions.*;
 import micromobility.payment.Wallet;
 import micromobility.payment.WalletPayment;
@@ -97,15 +95,15 @@ public class JourneyRealizeHandler {
     public void selectPaymentMethod(char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
         if (opt == 'W') {
             BigDecimal importCost = new BigDecimal(service.getImportCost());
-
             try {
                 realizePayment(importCost);
-            } catch (NotEnoughWalletException e) {
-                throw new NotEnoughWalletException("Saldo insuficiente para realizar el pago.");
+            } catch (Exception e) {
+                throw new ConnectException("Error de conexión.");
             }
         } else {
             throw new ProceduralException("Método de pago no soportado.");
         }
+        System.out.println("Pantalla credenciales.");
     }
 
     // Operacions internes
@@ -163,9 +161,10 @@ public class JourneyRealizeHandler {
         return time.isAfter(nightStart) || time.isBefore(nightEnd);
     }
 
-    private void realizePayment(BigDecimal imp) {
-        Wallet fakeWallet = new Wallet(new BigDecimal(200));
-        WalletPayment payment = new WalletPayment( 'W',this.service.getUserAccount(), imp, fakeWallet);
+    private void realizePayment(BigDecimal imp) throws NotEnoughWalletException {
+        UserAccount user = service.getUserAccount();
+        ServiceID id = service.getServiceID();
+        WalletPayment payment = new WalletPayment(id, user, imp, user.getWallet());
         payment.processPayment();
     }
 }
