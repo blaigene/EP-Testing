@@ -40,4 +40,8 @@ final public class StationID {
                 "id='" + id + '\'' +
                 '}';
     }
+
+    public boolean checkID() {
+        return id.matches("ST[0-9]{6}");
+    }
 }

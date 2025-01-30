@@ -7,6 +7,7 @@ final public class GeographicPoint {
     // The geographical coordinates expressed as decimal degrees
     private final float latitude;
     private final float longitude;
+
     public GeographicPoint (float lat, float lon) {
         if (lat < -90 || lat > 90) {
             throw new IllegalArgumentException("La latitud ha d'estar entre -90 i 90 graus.");
@@ -45,4 +46,16 @@ final public class GeographicPoint {
         return "Geographic point {" + "latitude='" + latitude + '\'' +
         ",longitude='" + longitude + '\'' +'}';
     }
+
+    public double haversineDistance(GeographicPoint other) {
+        final double R = 6371.0; // Earth's radius in kilometers
+        double dLat = Math.toRadians(other.latitude - this.latitude);
+        double dLon = Math.toRadians(other.longitude - this.longitude);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(this.latitude)) * Math.cos(Math.toRadians(other.latitude)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in kilometers
+    }
+
 }

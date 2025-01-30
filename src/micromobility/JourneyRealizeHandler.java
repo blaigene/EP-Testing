@@ -7,12 +7,12 @@ import micromobility.exceptions.*;
 import micromobility.payment.Wallet;
 import micromobility.payment.WalletPayment;
 import services.Server;
-import services.ServerImpl;
 import services.smartfeatures.*;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 public class JourneyRealizeHandler {
@@ -38,6 +38,7 @@ public class JourneyRealizeHandler {
     public void scanQR() throws ConnectException, InvalidPairingArgsException,
             CorruptedImgException, PMVNotAvailException, ProceduralException {
         VehicleID vehicleID = qrDecoder.getVehicleID(vehicle.getQrCode());
+        System.out.println("Ok escaneo QR.");
         server.checkPMVAvail(vehicleID);
         amc.setBTconnection();
         vehicle.setNotAvailable();
@@ -51,13 +52,13 @@ public class JourneyRealizeHandler {
         calculateImport(service.getDistance(), service.getDuration(), service.getAvgSpeed(), service.getInitDateTime());
         server.stopPairing(vehicle.getUser(), vehicle.getVehicleID(), vehicle.getStationID(), vehicle.getLocation(),
                 service.getInitDateTime(), service.getAvgSpeed(), service.getDistance(), service.getDuration(),
-                service.getImportCost());
+                new BigDecimal(service.getImportCost()));
         vehicle.setAvailable();
         System.out.println("Ok desemparejamiento, importe, selecciona método pago.");
     }
 
 
-    public static void broadcastStationID(StationID stationID) throws ConnectException {
+    public void broadcastStationID(StationID stationID) throws ConnectException {
         try {
             System.out.println("Estación identificada.");
         } catch (Exception e) {
@@ -67,7 +68,12 @@ public class JourneyRealizeHandler {
 
 
     public void startDriving() throws ConnectException, ProceduralException {
+        if (!vehicle.getState().equals(PMVState.NotAvailable)) {
+            throw new ProceduralException("El vehiculo tiene un estado incorrecto.");
+        }
+
         vehicle.setUnderWay();
+        service.setServiceInit();
         System.out.println("Pantalla de trayecto en curso.");
     }
 
@@ -88,16 +94,6 @@ public class JourneyRealizeHandler {
         }
     }
 
-    // Operacions internes
-
-    public void calculateValues(GeographicPoint gP, LocalDateTime date) {
-
-    }
-
-    public void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
-
-    }
-
     public void selectPaymentMethod(char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
         if (opt == 'W') {
             BigDecimal importCost = new BigDecimal(service.getImportCost());
@@ -105,11 +101,66 @@ public class JourneyRealizeHandler {
             try {
                 realizePayment(importCost);
             } catch (NotEnoughWalletException e) {
-                throw new NotEnoughWalletException("Saldo insuficient per realitzar el pagament.");
+                throw new NotEnoughWalletException("Saldo insuficiente para realizar el pago.");
             }
         } else {
             throw new ProceduralException("Método de pago no soportado.");
         }
+    }
+
+    // Operacions internes
+
+    public void calculateValues(GeographicPoint gP, LocalDateTime date) {
+        service.setEndPoint(gP);
+        service.setEndDateTime(date);
+        service.setDuration();
+        service.setDistance(calculateDistance());
+        service.setAvgSpeed();
+    }
+
+    private float calculateDistance() {
+        GeographicPoint start = service.getOriginPoint();
+        GeographicPoint end  = service.getEndPoint();
+
+        return (float) start.haversineDistance(end);
+    }
+
+    public void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
+        //Tarifes
+        float baseFare = 1.00f;
+        float farePerMinute = 0.20f;
+        float farePerKm = 0.50f;
+        float minimumFare = 2.00f;
+
+        // Extra per horari nocturn
+        float nightSurchargeRate = 1.20f;
+        boolean isNightTime = isNightTime(date);
+
+        // Cálcul del import
+        float timeFare = dur * farePerMinute;
+        float distanceFare = dis * farePerKm;
+        float totalFare = baseFare + timeFare + distanceFare;
+
+        // Extra per horari nocturn
+        if (isNightTime) {
+            totalFare *= nightSurchargeRate;
+        }
+
+        // Asegurarse de que el importe sea al menos la tarifa mínima
+        if (totalFare < minimumFare) {
+            totalFare = minimumFare;
+        }
+
+        service.setImportCost((long) totalFare);
+    }
+
+    private boolean isNightTime(LocalDateTime dateTime) {
+        LocalTime time = dateTime.toLocalTime();
+        LocalTime nightStart = LocalTime.of(22, 0);
+        LocalTime nightEnd = LocalTime.of(6, 0);
+
+        // Comprovar si és de nit
+        return time.isAfter(nightStart) || time.isBefore(nightEnd);
     }
 
     private void realizePayment(BigDecimal imp) {

@@ -41,4 +41,8 @@ final public class ServiceID {
                 "id='" + id + '\'' +
                 '}';
     }
+
+    public boolean checkID() {
+        return id.matches("SE[0-9]{6}");
+    }
 }

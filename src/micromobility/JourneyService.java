@@ -1,6 +1,9 @@
 package micromobility;
 
 import micromobility.exceptions.*;
+
+import java.math.BigDecimal;
+import java.security.Provider;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import data.*;
@@ -9,41 +12,31 @@ import data.*;
  * Classe que representa el servei de trajectes.
  */
 public class JourneyService {
-    private final String journeyId;
     private LocalDateTime initDateTime;
-    public int duration; // en minuts
-    private double distance; // en quilòmetres
-    private double avgSpeed; // en km/h
+    private int duration; // en minuts
+    private float distance; // en quilòmetres
+    private float avgSpeed; // en km/h
     private GeographicPoint originPoint;
     private GeographicPoint endPoint;
     private LocalDateTime endDateTime;
-    private double importCost;
-    private final String serviceID;
+    private long importCost;
+    private final ServiceID serviceID;
     private boolean inProgress;
     private UserAccount userAccount;
     private VehicleID vehicleID;
 
-    public JourneyService(String journeyId, String serviceID) {
-        // Validació del format de journeyID
-        if (!journeyId.matches("J[0-9]{6}")) {
-            throw new IllegalArgumentException("L'identificador del viatje ha de seguir el patró 'Jxxxxxx' (6 dígits).");
-        }
+    public JourneyService(ServiceID serviceID) {
 
         // Validació del format de serviceID
-        if (!serviceID.matches("S[0-9]{6}")) {
+        if (!serviceID.checkID()) {
             throw new IllegalArgumentException("L'identificador del servei ha de seguir el patró 'Sxxxxxx' (6 dígits).");
         }
 
-        this.journeyId = journeyId;
         this.serviceID = serviceID;
         setInitDateTime();
     }
 
-    public String getJourneyId() {
-        return journeyId;
-    }
-
-    public String getServiceID() {
+    public ServiceID getServiceID() {
         return serviceID;
     }
 
@@ -55,11 +48,11 @@ public class JourneyService {
         return duration;
     }
 
-    public double getDistance() {
+    public float getDistance() {
         return distance;
     }
 
-    public double getAvgSpeed() {
+    public float getAvgSpeed() {
         return avgSpeed;
     }
 
@@ -75,7 +68,7 @@ public class JourneyService {
         return endDateTime;
     }
 
-    public double getImportCost() {
+    public long getImportCost() {
         return importCost;
     }
 
@@ -111,6 +104,10 @@ public class JourneyService {
         this.endDateTime = provDate;
     }
 
+    public void setEndDateTime(LocalDateTime date) {
+        this.endDateTime = date;
+    }
+
     public void setDuration() {
         if (initDateTime == null || endDateTime == null) {
             throw new DataInconsistencyException("Les dades d'inici i finalització han d'estar configurades abans de calcular la duració.");
@@ -127,12 +124,11 @@ public class JourneyService {
         this.duration = duration;
     }
 
-    public void setDistance(double distance) {
+    public void setDistance(float distance) {
         if (distance < 0) {
             throw new NegativeDistanceException("La distància no pot ser negativa.");
         }
         this.distance = distance;
-        setAvgSpeed();
     }
 
     public void setAvgSpeed() {
@@ -144,7 +140,7 @@ public class JourneyService {
         }
 
         // Convertir la duració de minuts a hores per calcular la velocitat mitjana
-        double durationInHours = duration / 60.0;
+        float durationInHours = (float) duration / 60;
 
         // Calcular la velocitat mitjana
         this.avgSpeed = distance / durationInHours;
@@ -171,7 +167,7 @@ public class JourneyService {
         this.endPoint = endPoint;
     }
 
-    public void setImportCost(double importCost) {
+    public void setImportCost(long importCost) {
         if (importCost < 0) {
             throw new NegativeImportCostException("El cost d'importació no pot ser negatiu.");
         }
@@ -195,7 +191,6 @@ public class JourneyService {
     @Override
     public String toString() {
         return "JourneyService{" +
-                "journeyId='" + journeyId + '\'' +
                 ", initDate=" + initDateTime +
                 ", duration=" + duration +
                 ", distance=" + distance +

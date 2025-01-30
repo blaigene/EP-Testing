@@ -9,6 +9,7 @@ import micromobility.JourneyRealizeHandler;
 public class UnbondedBTSignalImpl implements UnbondedBTSignal {
 
     private final StationID fakeStationID;
+    private JourneyRealizeHandler jrh;
 
     public UnbondedBTSignalImpl() {
         fakeStationID = new StationID("ST123456");
@@ -20,7 +21,7 @@ public class UnbondedBTSignalImpl implements UnbondedBTSignal {
         while (true) {
             try {
                 // Crida al mètode responsable de transmetre l'ID de l'estació
-                JourneyRealizeHandler.broadcastStationID(fakeStationID);
+                jrh.broadcastStationID(fakeStationID);
 
                 // Espera un interval de temps definit abans de tornar a emetre (per exemple, cada 5 segons)
                 TimeUnit.SECONDS.sleep(5);
@@ -34,4 +35,10 @@ public class UnbondedBTSignalImpl implements UnbondedBTSignal {
         }
 
     }
+
+    // Setter per injectar la dependència de JourneyRealizeHandler.
+    public void setJRHandler (JourneyRealizeHandler jrh) {
+        this.jrh = jrh;
+    }
+
 }

@@ -40,6 +40,8 @@ public class ServerImpl implements Server {
         if (activePairings.containsKey(vhID)) {
             throw new PMVNotAvailException("El vehicle està emparellat amb un altre usuari.");
         }
+
+        System.out.println("Vehículo disponible.");
     }
 
     @Override
@@ -62,6 +64,7 @@ public class ServerImpl implements Server {
         }
 
         setPairing(user, veh, st, loc, date);
+        System.out.println("Emparejamiento registrado.");
     }
 
     @Override
@@ -76,15 +79,17 @@ public class ServerImpl implements Server {
         }
 
         // En aquest punt es registra la finalització del servei (guardar-ho a una base de dades).
-        JourneyService journeyService = new JourneyService("J000000", "S000000");
+        JourneyService journeyService = new JourneyService(new ServiceID("SE000000"));
         journeyService.setUserAccount(user);
         journeyService.setVehicleID(veh);
-        journeyService.setEndDate();
+        journeyService.setEndDateTime();
         journeyService.setDuration(dur);
-        journeyService.setDistance(dist);
-        journeyService.setImportCost(imp.doubleValue());
+        journeyService.setDistance((float) dist);
+        journeyService.setImportCost(imp.longValue());
 
         unPairRegisterService(journeyService);
+        registerLocation(veh, st);
+        System.out.println("Emparejamiento finalizado.");
     }
 
     @Override
