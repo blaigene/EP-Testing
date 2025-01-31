@@ -1,6 +1,7 @@
 package micromobilityTest;
 
 import data.GeographicPoint;
+import data.ServiceID;
 import data.UserAccount;
 import data.VehicleID;
 import micromobility.*;
@@ -21,42 +22,27 @@ public class JourneyServiceTest {
 
     @BeforeEach
     void setup() {
-        journeyService = new JourneyService("J123456", "S012345");
+        journeyService = new JourneyService(new ServiceID("SE123456"));
     }
 
     @Test
     void testConstructorValid() {
         Assertions.assertNotNull(journeyService);
-        Assertions.assertEquals("J123456", journeyService.getJourneyId());
-        Assertions.assertEquals("S012345", journeyService.getServiceID());
-    }
-
-    @Test
-    void testConstructorInvalidJourneyId() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            new JourneyService("J12345", "usuari_exemple1"); // Format incorrecte
-        });
+        Assertions.assertEquals("SE123456", journeyService.getServiceID());
     }
 
     @Test
     void testConstructorInvalidServiceID() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            new JourneyService("J123456", "usuari"); // Format incorrecte
+            new JourneyService(new ServiceID("SE12345")); // Format incorrecte
         });
     }
 
     @Test
     void testGetters() {
-        Assertions.assertEquals("J123456", journeyService.getJourneyId());
-        Assertions.assertEquals("S012345", journeyService.getServiceID());
-        Assertions.assertNotNull(journeyService.getInitDate());
-        Assertions.assertNotNull(journeyService.getInitHour());
-        Assertions.assertNull(journeyService.getEndDate());
-        Assertions.assertNull(journeyService.getEndHour());
-        journeyService.setEndDate();
-        journeyService.setEndHour();
+        Assertions.assertEquals("SE123456", journeyService.getServiceID());
         Assertions.assertEquals(0, journeyService.getDuration());
-        journeyService.duration = 60;
+        journeyService.setDuration(60);
         journeyService.setDistance(10);
         Assertions.assertEquals(10, journeyService.getDistance());
         Assertions.assertEquals(10, journeyService.getAvgSpeed());
@@ -73,22 +59,22 @@ public class JourneyServiceTest {
 
     @Test
     void testSetDistanceValid() {
-        journeyService.duration = 60;
-        journeyService.setDistance(15.5);
+        journeyService.setDuration(60);
+        journeyService.setDistance((float) 15.5);
         Assertions.assertEquals(15.5, journeyService.getDistance());
     }
 
     @Test
     void testAvgSpeedValid() {
-        journeyService.duration = 60;
-        journeyService.setDistance(15.0);
+        journeyService.setDuration(60);
+        journeyService.setDistance((float) 15.0);
         journeyService.setAvgSpeed();
         Assertions.assertEquals(15.0, journeyService.getAvgSpeed());
     }
 
     @Test
     void testSetDistanceInvalid() {
-        Assertions.assertThrows(NegativeDistanceException.class, () -> journeyService.setDistance(-10.0));
+        Assertions.assertThrows(NegativeDistanceException.class, () -> journeyService.setDistance((float) -10.0));
     }
 
     @Test
@@ -139,7 +125,7 @@ public class JourneyServiceTest {
     void testSetImportCostNegative() {
         double importCost = -10.0;
         Assertions.assertThrows(NegativeImportCostException.class, () -> {
-            journeyService.setImportCost(importCost);
+            journeyService.setImportCost((long) importCost);
         });
     }
 
@@ -147,7 +133,7 @@ public class JourneyServiceTest {
     void testSetImportCostPositive() {
         double importCost = 100.0;
         Assertions.assertDoesNotThrow(() -> {
-            journeyService.setImportCost(importCost);
+            journeyService.setImportCost((long) importCost);
         });
     }
 

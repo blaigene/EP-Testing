@@ -29,7 +29,7 @@ public class JourneyService {
 
         // Validació del format de serviceID
         if (!serviceID.checkID()) {
-            throw new IllegalArgumentException("L'identificador del servei ha de seguir el patró 'Sxxxxxx' (6 dígits).");
+            throw new IllegalArgumentException("L'identificador del servei ha de seguir el patró 'SExxxxxx' (6 dígits).");
         }
 
         this.serviceID = serviceID;

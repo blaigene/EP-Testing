@@ -1,6 +1,9 @@
 package micromobilityTest;
 
 import data.GeographicPoint;
+import data.StationID;
+import data.UserAccount;
+import data.VehicleID;
 import micromobility.*;
 import micromobility.exceptions.*;
 import org.junit.jupiter.api.*;
@@ -27,44 +30,43 @@ public class PMVehicleTest {
         // Exemple de punt geogràfic
         sampleLocation = new GeographicPoint(41.3851f, 2.1734f);
         PMVehicle = new PMVehicle(
-                "PMV012345",
+                new VehicleID("VH012345"),
                 sampleLocation,
                 "Temperatura: 22°C",
                 75.0,
                 sampleQrCode,
-                "BlaiGene0123456",
-                "ST012345"
-        );
+                new UserAccount("BlaiGene0123456"),
+                new StationID("ST012345"));
     }
 
     @Test
     void testIllegalArgumentException() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new PMVehicle("PM12345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
-        Assertions.assertDoesNotThrow(() -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new PMVehicle(new VehicleID("VH12345"), sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, new UserAccount("BlaiGene0123456"), new StationID("ST012345")));
+        Assertions.assertDoesNotThrow(() -> new PMVehicle(new VehicleID("VH012345"), sampleLocation, "Temperatura: 22°C", 75.0, sampleQrCode, new UserAccount("BlaiGene0123456"), new StationID("ST012345")));
     }
 
     @Test
     void testClassCastException() {
         // ClassCastException: location no és una instància de GeographicPoint
-        Assertions.assertThrows(ClassCastException.class, () -> new PMVehicle("PMV012345", (GeographicPoint) new Object(), "Temperatura: 22°C", 75.0, sampleQrCode, "BlaiGene0123456", "ST012345"));
+        Assertions.assertThrows(ClassCastException.class, () -> new PMVehicle(new VehicleID("VH012345"), (GeographicPoint) new Object(), "Temperatura: 22°C", 75.0, sampleQrCode, new UserAccount("BlaiGene0123456"), new StationID("ST012345")));
     }
 
     @Test
     void testIncorrectChargeLevel() {
         // IncorrectChargeLevel: nivell de càrrega fora de rang
-        Assertions.assertThrows(IncorrectChargeLevel.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", -1, sampleQrCode, "BlaiGene0123456", "ST012345"));
-        Assertions.assertThrows(IncorrectChargeLevel.class, () -> new PMVehicle("PMV012345", sampleLocation, "Temperatura: 22°C", 101, sampleQrCode, "BlaiGene0123456", "ST012345"));
+        Assertions.assertThrows(IncorrectChargeLevel.class, () -> new PMVehicle(new VehicleID("VH012345"), sampleLocation, "Temperatura: 22°C", -1, sampleQrCode, new UserAccount("BlaiGene0123456"), new StationID("ST012345")));
+        Assertions.assertThrows(IncorrectChargeLevel.class, () -> new PMVehicle(new VehicleID("VH012345"), sampleLocation, "Temperatura: 22°C", 101, sampleQrCode, new UserAccount("BlaiGene0123456"), new StationID("ST012345")));
     }
 
     @Test
     void testStateTransitions() {
-        PMVehicle.setNotAvailble();
+        PMVehicle.setNotAvailable();
         Assertions.assertEquals(PMVState.NotAvailable, PMVehicle.getState());
 
         PMVehicle.setUnderWay();
         Assertions.assertEquals(PMVState.UnderWay, PMVehicle.getState());
 
-        PMVehicle.setAvailble();
+        PMVehicle.setAvailable();
         Assertions.assertEquals(PMVState.Available, PMVehicle.getState());
 
         // Añadido el test para TemporaryParking

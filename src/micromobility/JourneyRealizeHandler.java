@@ -1,11 +1,11 @@
 package micromobility;
 
 import data.*;
-import micromobility.exceptions.*;
-import micromobility.payment.Wallet;
-import micromobility.payment.WalletPayment;
-import services.Server;
+import services.*;
+import services.exceptions.*;
 import services.smartfeatures.*;
+import micromobility.exceptions.*;
+import micromobility.payment.*;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;
@@ -19,22 +19,15 @@ public class JourneyRealizeHandler {
     private JourneyService service;
     private QRDecoder qrDecoder;
     private Server server;
-    private UnbondedBTSignal btSignal;
     private ArduinoMicroController amc;
 
-    public JourneyRealizeHandler() {
-        /**this.vehicle = new PMVehicle();
-        this.service = new JourneyService();
-        this.qrDecoder = new QRDecoderImpl();
-        this.server = new ServerImpl();
-        this.btSignal = new UnbondedBTSignalImpl();
-        this.amc = new ArduinoMicroControllerImpl();**/
+    public JourneyRealizeHandler(PMVehicle vehicle, JourneyService service) {
+        this.vehicle = vehicle;
+        this.service = service;
     }
 
-
-
     public void scanQR() throws ConnectException, InvalidPairingArgsException,
-            CorruptedImgException, PMVNotAvailException, ProceduralException {
+            CorruptedImgException, PMVNotAvailException {
         VehicleID vehicleID = qrDecoder.getVehicleID(vehicle.getQrCode());
         System.out.println("Ok escaneo QR.");
         server.checkPMVAvail(vehicleID);
@@ -124,7 +117,6 @@ public class JourneyRealizeHandler {
     }
 
     public void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
-        //Tarifes
         float baseFare = 1.00f;
         float farePerMinute = 0.20f;
         float farePerKm = 0.50f;
@@ -144,7 +136,6 @@ public class JourneyRealizeHandler {
             totalFare *= nightSurchargeRate;
         }
 
-        // Asegurarse de que el importe sea al menos la tarifa mínima
         if (totalFare < minimumFare) {
             totalFare = minimumFare;
         }
@@ -166,5 +157,30 @@ public class JourneyRealizeHandler {
         ServiceID id = service.getServiceID();
         WalletPayment payment = new WalletPayment(id, user, imp, user.getWallet());
         payment.processPayment();
+    }
+
+    // Setters i Getters
+    public void setServer(Server server){
+        this.server = server;
+    }
+
+    public void setDecoder(QRDecoder qrDecoder){
+        this.qrDecoder = qrDecoder;
+    }
+
+    public void setAmc(ArduinoMicroController amc){
+        this.amc = amc;
+    }
+
+    public PMVehicle getVehicle(){
+        return this.vehicle;
+    }
+
+    public JourneyService getService(){
+        return this.service;
+    }
+
+    public PMVState getVehicleState() {
+        return vehicle.getState();
     }
 }

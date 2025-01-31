@@ -63,8 +63,12 @@ public class ArduinoMicroControllerImpl implements ArduinoMicroController {
         // Simula la acción de deshacer la conexión Bluetooth
         if (isBTConnected) {
             isBTConnected = false;
+        } else {
+            isBTConnected = true;
         }
     }
+
+    public void setBTConnected() { isBTConnected = true; }
 
     // Métodos para configurar el estado de los problemas en el vehículo o los frenos
     public void setVehicleHasIssues(boolean hasIssues) {

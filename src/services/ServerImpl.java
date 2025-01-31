@@ -32,9 +32,6 @@ public class ServerImpl implements Server {
 
     @Override
     public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
-        if (!vehicleAvailability.containsKey(vhID)) {
-            throw new ConnectException("No s'ha pogut connectar amb el servidor per verificar la disponibilitat del vehicle.");
-        }
 
         // Verifiquem si el vehicle ja està emparellat amb un altre usuari
         if (activePairings.containsKey(vhID)) {
@@ -46,24 +43,11 @@ public class ServerImpl implements Server {
 
     @Override
     public void registerPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date) throws InvalidPairingArgsException, ConnectException {
-        // Verificar si el vehicle està disponible
-        if (!vehicleAvailability.containsKey(veh)) {
-            throw new ConnectException("No s'ha pogut connectar amb el servidor per registrar l'emparellament.");
-        }
-
         if (activePairings.containsKey(veh)) {
             throw new InvalidPairingArgsException("El vehicle ja està emparellat amb un altre usuari.");
         }
 
-        if (!stationGPs.get(st).equals(loc)) {
-            throw new InvalidPairingArgsException("L'ubicació facilitada no correspon amb l'ubicació de l'estació.");
-        }
-
-        if (!vehiclesInStation.get(st).equals(veh)) {
-            throw new InvalidPairingArgsException("El vehicle facilitat no es troba en aquesta estació.");
-        }
-
-        setPairing(user, veh, st, loc, date);
+        setPairing(user, veh, st, loc);
         System.out.println("Emparejamiento registrado.");
     }
 
@@ -93,7 +77,7 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void setPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date) {
+    public void setPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc) {
         activePairings.put(veh, user);  // Registra l'emparellament del vehicle amb l'usuari
         vehicleAvailability.put(veh, false); // El vehicle deixa d'estar disponible
     }
@@ -129,7 +113,7 @@ public class ServerImpl implements Server {
 
         if (payMeth == 'W') { // Wallet
             Wallet fakeWallet = new Wallet(new BigDecimal(200));
-            WalletPayment payment = new WalletPayment(payMeth, user, imp, fakeWallet);
+            WalletPayment payment = new WalletPayment(servID, user, imp, fakeWallet);
             paymentsDB.put(servID, payment);
         } else {
             throw new MethodNotSupportedException("Mètode no implementat.");

@@ -21,6 +21,7 @@ public class QRDecoderImpl implements QRDecoder {
         return new VehicleID("VH123456");
     }
 
+    @Override
     public void setCorrupted(boolean isCorrupted) {
         this.isCorrupted = isCorrupted;
     }

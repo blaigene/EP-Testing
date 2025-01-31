@@ -1,5 +1,6 @@
 package micromobilityTest;
 
+import data.ServiceID;
 import micromobility.exceptions.NotEnoughWalletException;
 import data.UserAccount;
 import micromobility.payment.Wallet;
@@ -15,6 +16,7 @@ class PaymentTest {
     private Wallet wallet;
     private UserAccount user;
     private BigDecimal initialBalance;
+    private ServiceID id;
 
     @BeforeAll
     static void setupAll() {
@@ -27,13 +29,14 @@ class PaymentTest {
         initialBalance = new BigDecimal("100.00");  // Establecemos un saldo inicial para el monedero
         wallet = new Wallet(initialBalance);  // Creamos un nuevo monedero con el saldo inicial
         user = new UserAccount("john.doe1234567");  // Crear un usuario con un nombre que cumpla con los 15 caracteres requeridos
+        id = new ServiceID("SE123456");
     }
 
     @Test
     void testWalletHasSufficientFunds() throws NotEnoughWalletException {
         // Test per comprovar que es processa correctament quan hi ha suficients fons
         BigDecimal paymentAmount = new BigDecimal("50.00");
-        WalletPayment walletPayment = new WalletPayment('W', user, paymentAmount, wallet);
+        WalletPayment walletPayment = new WalletPayment(id, user, paymentAmount, wallet);
 
         // Processem el pagament
         walletPayment.processPayment();
@@ -47,7 +50,7 @@ class PaymentTest {
     void testWalletHasInsufficientFunds() {
         // Test per comprovar que es llença una excepció si no hi ha suficients fons
         BigDecimal paymentAmount = new BigDecimal("300.00");
-        WalletPayment walletPayment = new WalletPayment('W', user, paymentAmount, wallet);
+        WalletPayment walletPayment = new WalletPayment(id, user, paymentAmount, wallet);
 
         // Verifiquem que es llença l'excepció NotEnoughWalletException
         assertThrows(NotEnoughWalletException.class, () -> {
@@ -61,8 +64,8 @@ class PaymentTest {
         BigDecimal firstPayment = new BigDecimal("30.00");
         BigDecimal secondPayment = new BigDecimal("20.00");
 
-        WalletPayment firstWalletPayment = new WalletPayment('W', user, firstPayment, wallet);
-        WalletPayment secondWalletPayment = new WalletPayment('W', user, secondPayment, wallet);
+        WalletPayment firstWalletPayment = new WalletPayment(id, user, firstPayment, wallet);
+        WalletPayment secondWalletPayment = new WalletPayment(id, user, secondPayment, wallet);
 
         // Processem els dos pagaments
         firstWalletPayment.processPayment();

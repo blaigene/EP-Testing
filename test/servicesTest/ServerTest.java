@@ -55,7 +55,7 @@ class ServerTest {
     @Test
     void testCheckPMVAvail_vehiclePaired() throws ConnectException, PMVNotAvailException, InvalidPairingArgsException {
         // Pairem un vehicle i després verifiquem la seva disponibilitat
-        server.setPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now());
+        server.setPairing(userAccount, vehicleID, stationID, stationLocation);
 
         assertThrows(PMVNotAvailException.class, () -> server.checkPMVAvail(vehicleID));
     }
@@ -104,7 +104,7 @@ class ServerTest {
         server.registerPairing(userAccount, vehicleID, stationID, stationLocation, LocalDateTime.now());
 
         // Creem un JourneyService fictici
-        JourneyService journeyService = new JourneyService("J000001", "S000001");
+        JourneyService journeyService = new JourneyService(new ServiceID("SE123456"));
         journeyService.setUserAccount(userAccount);
         journeyService.setVehicleID(vehicleID);
 
