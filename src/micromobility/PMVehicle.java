@@ -63,19 +63,32 @@ public class PMVehicle {
         return stationID;
     }
 
-    public void setNotAvailable() {
+    public void setNotAvailable() throws ProceduralException {
+        if (!state.equals(PMVState.Available)) {
+            throw new ProceduralException("El vehículo no se encuentra en el estado correcto.");
+        }
         this.state = PMVState.NotAvailable;
     }
 
-    public void setUnderWay() {
+    public void setUnderWay() throws ProceduralException  {
+        if (!state.equals(PMVState.NotAvailable)) {
+            throw new ProceduralException("El vehículo no se encuentra en el estado correcto.");
+        }
         this.state = PMVState.UnderWay;
     }
 
-    public void setAvailable() {
+    public void setAvailable() throws ProceduralException  {
+        if (!state.equals(PMVState.UnderWay)) {
+            throw new ProceduralException("El vehículo no se encuentra en el estado correcto.");
+        }
         this.state = PMVState.Available;
     }
 
     public VehicleID getVehicleID() { return vehicleID; }
+
+    public void setVehicleID(VehicleID veh) {
+        vehicleID = veh;
+    }
 
     public void setTemporaryParking() {
         this.state = PMVState.TemporaryParking;  // Asigna el estado a TemporaryParking

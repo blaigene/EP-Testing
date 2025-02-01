@@ -60,13 +60,13 @@ public class PMVehicleTest {
 
     @Test
     void testStateTransitions() {
-        PMVehicle.setNotAvailable();
+        Assertions.assertDoesNotThrow(() -> PMVehicle.setNotAvailable());
         Assertions.assertEquals(PMVState.NotAvailable, PMVehicle.getState());
 
-        PMVehicle.setUnderWay();
+        Assertions.assertDoesNotThrow(() -> PMVehicle.setUnderWay());
         Assertions.assertEquals(PMVState.UnderWay, PMVehicle.getState());
 
-        PMVehicle.setAvailable();
+        Assertions.assertDoesNotThrow(() -> PMVehicle.setAvailable());
         Assertions.assertEquals(PMVState.Available, PMVehicle.getState());
 
         // Añadido el test para TemporaryParking

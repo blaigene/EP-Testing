@@ -7,7 +7,7 @@ import java.security.Provider;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import data.*;
-
+import java.net.ConnectException;
 /**
  * Classe que representa el servei de trajectes.
  */
@@ -20,7 +20,7 @@ public class JourneyService {
     private GeographicPoint endPoint;
     private LocalDateTime endDateTime;
     private long importCost;
-    private final ServiceID serviceID;
+    private ServiceID serviceID;
     private boolean inProgress;
     private UserAccount userAccount;
     private VehicleID vehicleID;
@@ -84,11 +84,17 @@ public class JourneyService {
         return vehicleID;
     }
 
-    public void setServiceInit() {
+    public void setServiceInit() throws ConnectException{
+        if (isInProgress()){
+            throw new ConnectException("No se pudo conectar con el vehículo.");
+        }
         this.inProgress = true;
     }
 
-    public void setServiceFinish() {
+    public void setServiceFinish() throws ConnectException{
+        if (!isInProgress()){
+            throw new ConnectException("No se pudo conectar con el vehículo.");
+        }
         this.inProgress = false;
     }
 
@@ -186,6 +192,13 @@ public class JourneyService {
             throw new NullArgumentException("El vehicle no pot ser nul.");
         }
         this.vehicleID = vehicleID;
+    }
+
+    public void setServiceID(ServiceID serviceID) {
+        if (serviceID == null) {
+            throw new NullArgumentException("El vehicle no pot ser nul.");
+        }
+        this.serviceID = serviceID;
     }
 
     @Override

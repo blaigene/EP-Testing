@@ -64,22 +64,24 @@ public class JourneyRealizeHandler {
             throw new ProceduralException("El vehiculo tiene un estado incorrecto.");
         }
 
-        vehicle.setUnderWay();
-        service.setServiceInit();
-        System.out.println("Pantalla de trayecto en curso.");
+        try {
+            service.setServiceInit();
+            vehicle.setUnderWay();
+            System.out.println("Pantalla de trayecto en curso.");
+        } catch (Exception e) {
+            throw new ConnectException("No se pudo conectar con el vehículo.");
+        }
     }
 
 
     public void stopDriving() throws ConnectException, ProceduralException {
-        if (!service.isInProgress()) {
-            throw new ProceduralException("El viaje no está en progreso.");
-        }
 
         if (!vehicle.getState().equals(PMVState.UnderWay)) {
             throw new ProceduralException("El vehiculo no está siendo utilizado");
         }
 
         try {
+            service.setServiceFinish();
             System.out.println("Pantalla de vehículo detenido.");
         } catch (Exception e) {
             throw new ConnectException("No se pudo conectar con el vehículo.");
@@ -89,11 +91,7 @@ public class JourneyRealizeHandler {
     public void selectPaymentMethod(char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
         if (opt == 'W') {
             BigDecimal importCost = new BigDecimal(service.getImportCost());
-            try {
                 realizePayment(importCost);
-            } catch (Exception e) {
-                throw new ConnectException("Error de conexión.");
-            }
         } else {
             throw new ProceduralException("Método de pago no soportado.");
         }
@@ -153,7 +151,11 @@ public class JourneyRealizeHandler {
         return time.isAfter(nightStart) || time.isBefore(nightEnd);
     }
 
-    private void realizePayment(BigDecimal imp) throws NotEnoughWalletException {
+    private void realizePayment(BigDecimal imp) throws NotEnoughWalletException, ConnectException {
+        if (!service.getVehicleID().equals(vehicle.getVehicleID())) {
+            throw new ConnectException("No se pudo establecer la conexión entre el vehículo y el servicio.");
+        }
+
         UserAccount user = vehicle.getUser();
         ServiceID id = service.getServiceID();
         WalletPayment payment = new WalletPayment(id, user, imp, user.getWallet());

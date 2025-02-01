@@ -54,12 +54,12 @@ public class ServerImpl implements Server {
     @Override
     public void stopPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date, double avSp, double dist, int dur, BigDecimal imp) throws InvalidPairingArgsException, ConnectException, PairingNotFoundException {
         // Verificar si el vehicle està emparellat amb aquest usuari
-        if (!activePairings.containsKey(veh) || !activePairings.get(veh).equals(user)) {
-            throw new InvalidPairingArgsException("No es pot aturar l'emparellament perquè no s'ha trobat el vehicle emparellat amb aquest usuari.");
-        }
-
         if (!vehicleAvailability.containsKey(veh)) {
             throw new ConnectException("No s'ha pogut connectar amb el servidor per registrar l'emparellament.");
+        }
+
+        if (!activePairings.containsKey(veh) || !activePairings.get(veh).equals(user)) {
+            throw new InvalidPairingArgsException("No es pot aturar l'emparellament perquè no s'ha trobat el vehicle emparellat amb aquest usuari.");
         }
 
         // En aquest punt es registra la finalització del servei (guardar-ho a una base de dades).

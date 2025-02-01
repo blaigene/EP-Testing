@@ -15,6 +15,10 @@ public class Wallet {
         return balance;
     }
 
+    public void setBalance(BigDecimal newBalance) {
+        balance = newBalance;
+    }
+
     public void deduct(BigDecimal imp) throws NotEnoughWalletException {
         if(balance.compareTo(imp) < 0) {
             throw new NotEnoughWalletException("Saldo insuficient per realitzar el pagament.");

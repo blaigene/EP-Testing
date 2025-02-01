@@ -139,10 +139,10 @@ public class JourneyServiceTest {
 
     @Test
     void testServiceInitAndFinish() {
-        journeyService.setServiceInit();
+        Assertions.assertDoesNotThrow(() -> journeyService.setServiceInit());
         Assertions.assertTrue(journeyService.isInProgress());
 
-        journeyService.setServiceFinish();
+        Assertions.assertDoesNotThrow(() -> journeyService.setServiceFinish());
         Assertions.assertFalse(journeyService.isInProgress());
     }
 
