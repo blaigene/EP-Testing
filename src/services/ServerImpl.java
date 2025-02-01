@@ -32,9 +32,8 @@ public class ServerImpl implements Server {
 
     @Override
     public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
-
         // Verifiquem si el vehicle ja està emparellat amb un altre usuari
-        if (activePairings.containsKey(vhID)) {
+        if (vehicleAvailability.containsKey(vhID) && !vehicleAvailability.get(vhID)) {
             throw new PMVNotAvailException("El vehicle està emparellat amb un altre usuari.");
         }
 
@@ -43,8 +42,9 @@ public class ServerImpl implements Server {
 
     @Override
     public void registerPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date) throws InvalidPairingArgsException, ConnectException {
-        if (activePairings.containsKey(veh)) {
-            throw new InvalidPairingArgsException("El vehicle ja està emparellat amb un altre usuari.");
+        //Verifiquem paràmetres entrada.
+        if (loc.getLatitude() < -90 || loc.getLatitude() > 90 || loc.getLongitude() < -180 || loc.getLongitude() > 180) {
+            throw new InvalidPairingArgsException("La localització es incorrecta.");
         }
 
         setPairing(user, veh, st, loc);

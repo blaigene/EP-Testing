@@ -5,6 +5,8 @@ import micromobility.*;
 import micromobility.exceptions.*;
 import org.junit.jupiter.api.*;
 import services.*;
+import services.exceptions.*;
+import services.exceptions.PMVPhisicalException;
 import services.smartfeatures.*;
 
 import java.net.ConnectException;
@@ -21,11 +23,12 @@ public class JourneyRealizeHandlerTest {
     private JourneyService service;
 
     @BeforeEach
-    void setUp() throws ProceduralException, ConnectException {
+    void setUp() {
         service = new JourneyService(new ServiceID("SE000000"));
+        service.setOriginPoint(new GeographicPoint(45.3851f, 3.1734f));
         vehicle = new PMVehicle(new VehicleID("VH000000"), new GeographicPoint(41.3851f, 2.1734f), "Data",
                 80, new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB),
-                new UserAccount("OriolVinees1234"), new StationID("ST000000"));
+                new UserAccount("OriolVines12345"), new StationID("ST000000"));
         handler = new JourneyRealizeHandler(vehicle, service);
         server = new ServerImpl();
         amc = new ArduinoMicroControllerImpl();
@@ -54,9 +57,8 @@ public class JourneyRealizeHandlerTest {
     @Test
     void testScanQRThrowsInvalidPairingArgsException() {
         Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
-        server.setPairing(new UserAccount("LionelMessi1234"), new VehicleID("VH000000"),
-                new StationID("ST000000"), new GeographicPoint(1,1));
-        Assertions.assertThrows(services.exceptions.InvalidPairingArgsException.class, () -> handler.scanQR());
+        vehicle.setLocation(new GeographicPoint(2000, 2000));
+        Assertions.assertThrows(InvalidPairingArgsException.class, () -> handler.scanQR());
         Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
     }
 
@@ -65,36 +67,21 @@ public class JourneyRealizeHandlerTest {
         Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
         qrDecoder.setCorrupted(true);
         handler.setDecoder(qrDecoder);
-        Assertions.assertThrows(services.exceptions.CorruptedImgException.class, () -> handler.scanQR());
+        Assertions.assertThrows(CorruptedImgException.class, () -> handler.scanQR());
     }
 
     @Test
     void testScanQRThrowsPMVNotAvailException() {
         Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
-
+        server.setPairing(new UserAccount("LionelMessi1234"), new VehicleID("VH000000"),
+                new StationID("ST000000"), new GeographicPoint(1,1));
+        Assertions.assertThrows(PMVNotAvailException.class, () -> handler.scanQR());
+        Assertions.assertNotEquals(PMVState.NotAvailable, handler.getVehicleState());
     }
 
     @Test
-    void testSuccessfulUnpairVehicle() {
+    void testScanQRThrowsProceduralException() {
         Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
-        Assertions.assertDoesNotThrow(() -> handler.scanQR());
-        Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
-
-    }
-
-    @Test
-    void testUnpairVehicleThrowsConnectException() {
-        Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
-        Assertions.assertDoesNotThrow(() -> handler.scanQR());
-        Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
-
-    }
-
-    @Test
-    void testUnpairVehicleThrowsProceduralException() {
-        Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
-        Assertions.assertDoesNotThrow(() -> handler.scanQR());
-        Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
 
     }
 
@@ -103,7 +90,9 @@ public class JourneyRealizeHandlerTest {
         Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
         Assertions.assertDoesNotThrow(() -> handler.scanQR());
         Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
-
+        Assertions.assertDoesNotThrow(() -> handler.startDriving());
+        Assertions.assertEquals(PMVState.UnderWay, handler.getVehicleState());
+        Assertions.assertTrue(service.isInProgress());
     }
 
     @Test
@@ -127,7 +116,11 @@ public class JourneyRealizeHandlerTest {
         Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
         Assertions.assertDoesNotThrow(() -> handler.scanQR());
         Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
-
+        Assertions.assertDoesNotThrow(() -> handler.startDriving());
+        Assertions.assertEquals(PMVState.UnderWay, handler.getVehicleState());
+        Assertions.assertTrue(service.isInProgress());
+        Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
+        Assertions.assertDoesNotThrow(() -> handler.stopDriving());
     }
 
     @Test
@@ -147,11 +140,48 @@ public class JourneyRealizeHandlerTest {
     }
 
     @Test
-    void testSuccessfulSelectPaymentMethod() {
+    void testSuccessfulUnpairVehicle() {
+        Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
+        Assertions.assertDoesNotThrow(() -> handler.scanQR());
+        Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
+        Assertions.assertDoesNotThrow(() -> handler.startDriving());
+        Assertions.assertEquals(PMVState.UnderWay, handler.getVehicleState());
+        Assertions.assertTrue(service.isInProgress());
+        Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
+        Assertions.assertDoesNotThrow(() -> handler.stopDriving());
+        Assertions.assertDoesNotThrow(() -> handler.unPairVehicle());
+        Assertions.assertEquals(PMVState.Available, handler.getVehicleState());
+    }
+
+    @Test
+    void testUnpairVehicleThrowsConnectException() {
         Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
         Assertions.assertDoesNotThrow(() -> handler.scanQR());
         Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
 
+    }
+
+    @Test
+    void testUnpairVehicleThrowsProceduralException() {
+        Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
+        Assertions.assertDoesNotThrow(() -> handler.scanQR());
+        Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
+
+    }
+
+    @Test
+    void testSuccessfulSelectPaymentMethod() {
+        Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
+        Assertions.assertDoesNotThrow(() -> handler.scanQR());
+        Assertions.assertEquals(PMVState.NotAvailable, handler.getVehicleState());
+        Assertions.assertDoesNotThrow(() -> handler.startDriving());
+        Assertions.assertEquals(PMVState.UnderWay, handler.getVehicleState());
+        Assertions.assertTrue(service.isInProgress());
+        Assertions.assertDoesNotThrow(() -> handler.broadcastStationID(vehicle.getStationID()));
+        Assertions.assertDoesNotThrow(() -> handler.stopDriving());
+        Assertions.assertDoesNotThrow(() -> handler.unPairVehicle());
+        Assertions.assertEquals(PMVState.Available, handler.getVehicleState());
+        Assertions.assertDoesNotThrow(() -> handler.selectPaymentMethod('W'));
     }
 
     @Test

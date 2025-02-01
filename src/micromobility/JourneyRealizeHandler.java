@@ -1,6 +1,7 @@
 package micromobility;
 
 import data.*;
+import micromobility.exceptions.ProceduralException;
 import services.*;
 import services.exceptions.*;
 import services.smartfeatures.*;
@@ -27,7 +28,7 @@ public class JourneyRealizeHandler {
     }
 
     public void scanQR() throws ConnectException, InvalidPairingArgsException,
-            CorruptedImgException, PMVNotAvailException {
+            CorruptedImgException, PMVNotAvailException, ProceduralException {
         VehicleID vehicleID = qrDecoder.getVehicleID(vehicle.getQrCode());
         System.out.println("Ok escaneo QR.");
         server.checkPMVAvail(vehicleID);
@@ -104,7 +105,7 @@ public class JourneyRealizeHandler {
     public void calculateValues(GeographicPoint gP, LocalDateTime date) {
         service.setEndPoint(gP);
         service.setEndDateTime(date);
-        service.setDuration();
+        service.setDuration(60);
         service.setDistance(calculateDistance());
         service.setAvgSpeed();
     }
@@ -153,7 +154,7 @@ public class JourneyRealizeHandler {
     }
 
     private void realizePayment(BigDecimal imp) throws NotEnoughWalletException {
-        UserAccount user = service.getUserAccount();
+        UserAccount user = vehicle.getUser();
         ServiceID id = service.getServiceID();
         WalletPayment payment = new WalletPayment(id, user, imp, user.getWallet());
         payment.processPayment();
@@ -170,6 +171,10 @@ public class JourneyRealizeHandler {
 
     public void setAmc(ArduinoMicroController amc){
         this.amc = amc;
+    }
+
+    public void setVehicle(PMVehicle vehicle) {
+        this.vehicle = vehicle;
     }
 
     public PMVehicle getVehicle(){

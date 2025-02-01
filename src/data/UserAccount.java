@@ -19,7 +19,7 @@ final public class UserAccount {
             throw new IllegalArgumentException("El nom d'usuari ha de tenir 15 caràcters (lletres, números, '.', '-', '_').");
         }
         this.username = username;
-        this.wallet = new Wallet(new BigDecimal(0));
+        this.wallet = new Wallet(new BigDecimal(1000));
     }
 
     public String getUsername() {

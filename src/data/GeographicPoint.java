@@ -9,12 +9,6 @@ final public class GeographicPoint {
     private final float longitude;
 
     public GeographicPoint (float lat, float lon) {
-        if (lat < -90 || lat > 90) {
-            throw new IllegalArgumentException("La latitud ha d'estar entre -90 i 90 graus.");
-        }
-        if (lon < -180 || lon > 180) {
-            throw new IllegalArgumentException("La longitud ha d'estar entre -180 i 180 graus.");
-        }
         this.latitude = lat;
         this.longitude = lon;
     }

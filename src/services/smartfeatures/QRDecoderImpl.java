@@ -18,7 +18,7 @@ public class QRDecoderImpl implements QRDecoder {
         if (isCorrupted) {
             throw new CorruptedImgException("L'imatge del QR està danyada o no és valida.");
         }
-        return new VehicleID("VH123456");
+        return new VehicleID("VH000000");
     }
 
     @Override
