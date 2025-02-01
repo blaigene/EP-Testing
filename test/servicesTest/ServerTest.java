@@ -26,7 +26,7 @@ class ServerTest {
 
     @BeforeAll
     static void setupAll() {
-        System.out.println("Iniciant tests de ServerImpl...");
+        System.out.println("INICIALIZANDO SERVER TESTS");
     }
 
     @BeforeEach
@@ -140,8 +140,8 @@ class ServerTest {
 
     @AfterAll
     static void tearDownAll() {
-        // Executat després de tots els tests
-        System.out.println("Finalitzats els tests de Server.");
+        System.out.println("FINALIZANDO SERVER TESTS");
+        System.out.println();
     }
 }
 

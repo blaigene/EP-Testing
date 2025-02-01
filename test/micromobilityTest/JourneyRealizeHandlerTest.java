@@ -22,6 +22,11 @@ public class JourneyRealizeHandlerTest {
     private PMVehicle vehicle;
     private JourneyService service;
 
+    @BeforeAll
+    static void initAll() {
+        System.out.println("INICIALIZANDO JOURNEYREALIZEHANDLER TESTS");
+    }
+
     @BeforeEach
     void setUp() {
         service = new JourneyService(new ServiceID("SE000000"));
@@ -211,5 +216,21 @@ public class JourneyRealizeHandlerTest {
         Wallet emptyWallet = poorUser.getWallet();
         emptyWallet.setBalance(new BigDecimal(0)); //Injectem valor erroni.
         Assertions.assertThrows(NotEnoughWalletException.class, () -> handler.selectPaymentMethod('W'));
+    }
+
+    @AfterEach
+    void tearDown() {
+        handler = null;
+        server = null;
+        qrDecoder = null;
+        amc = null;
+        service = null;
+        vehicle = null;
+    }
+
+    @AfterAll
+    static void tearDownAll() {
+        System.out.println("FINALIZANDO JOURNEYREALIZEHANDLER TESTS");
+        System.out.println();
     }
 }

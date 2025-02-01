@@ -12,7 +12,7 @@ class ArduinoMicroControllerTest {
 
     @BeforeAll
     static void setupAll() {
-        System.out.println("Iniciant proves de ArduinoMicroControllerImpl...");
+        System.out.println("INICIALIZANDO ARDUINOMICROCONTROLLER TESTS");
     }
 
     @BeforeEach
@@ -102,6 +102,7 @@ class ArduinoMicroControllerTest {
 
     @AfterAll
     static void tearDownAll() {
-        System.out.println("Totes les proves finalitzades.");
+        System.out.println("FINALIZANDO ARDUINOMICROCONTROLLER TESTS");
+        System.out.println();
     }
 }

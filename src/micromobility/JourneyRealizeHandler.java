@@ -7,7 +7,6 @@ import services.exceptions.*;
 import services.smartfeatures.*;
 import micromobility.exceptions.*;
 import micromobility.payment.*;
-
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
@@ -177,6 +176,10 @@ public class JourneyRealizeHandler {
 
     public void setVehicle(PMVehicle vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public void setService(JourneyService service) {
+        this.service = service;
     }
 
     public PMVehicle getVehicle(){

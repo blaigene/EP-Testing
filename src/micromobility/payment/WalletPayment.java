@@ -2,7 +2,6 @@ package micromobility.payment;
 
 import data.ServiceID;
 import data.UserAccount;
-import micromobility.JourneyService;
 import micromobility.exceptions.NotEnoughWalletException;
 import java.math.BigDecimal;
 

@@ -1,4 +1,5 @@
 package data;
+
 import data.exceptions.*;
 
 /**
@@ -39,9 +40,5 @@ final public class VehicleID {
         return "VehicleID{" +
                 "id='" + id + '\'' +
                 '}';
-    }
-
-    public boolean checkID() {
-        return id.matches("VH[0-9]{6}");
     }
 }

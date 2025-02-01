@@ -1,7 +1,6 @@
 package services.smartfeatures;
 
 import services.exceptions.*;
-
 import java.net.ConnectException;
 
 public class ArduinoMicroControllerImpl implements ArduinoMicroController {

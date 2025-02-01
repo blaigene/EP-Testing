@@ -6,7 +6,6 @@ import data.UserAccount;
 import data.VehicleID;
 import micromobility.JourneyService;
 import services.exceptions.*;
-
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;

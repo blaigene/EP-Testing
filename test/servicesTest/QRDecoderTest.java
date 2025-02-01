@@ -12,7 +12,7 @@ public class QRDecoderTest {
 
     @BeforeAll
     static void setupAll() {
-        System.out.println("Iniciant proves de QRDecoder...");
+        System.out.println("INICIALIZANDO QRDECODER TESTS");
     }
 
     @BeforeEach
@@ -53,6 +53,7 @@ public class QRDecoderTest {
 
     @AfterAll
     static void tearDownAll() {
-        System.out.println("Finalitzant proves de QRDecoder...");
+        System.out.println("FINALIZANDO QRDECODER TESTS");
+        System.out.println();
     }
 }

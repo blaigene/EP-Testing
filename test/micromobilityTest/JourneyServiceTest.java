@@ -17,7 +17,7 @@ public class JourneyServiceTest {
 
     @BeforeAll
     static void setupAll() {
-        System.out.println("Iniciant proves de JourneyService...");
+        System.out.println("INICIALIZANDO JOURNEYSERVICE TESTS");
     }
 
     @BeforeEach
@@ -171,7 +171,8 @@ public class JourneyServiceTest {
 
     @AfterAll
     static void tearDownAll() {
-        System.out.println("Finalitzant proves de JourneyService...");
+        System.out.println("FINALIZANDO JOURNEYSERVICE TESTS");
+        System.out.println();
     }
 }
 

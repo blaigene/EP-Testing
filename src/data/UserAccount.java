@@ -1,7 +1,7 @@
 package data;
+
 import data.exceptions.*;
 import micromobility.payment.Wallet;
-
 import java.math.BigDecimal;
 
 /**
@@ -27,10 +27,6 @@ final public class UserAccount {
     }
 
     public Wallet getWallet() { return wallet; }
-
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
-    }
 
     @Override
     public boolean equals(Object o) {

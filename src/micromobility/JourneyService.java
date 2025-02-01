@@ -1,13 +1,11 @@
 package micromobility;
 
 import micromobility.exceptions.*;
-
-import java.math.BigDecimal;
-import java.security.Provider;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import data.*;
 import java.net.ConnectException;
+
 /**
  * Classe que representa el servei de trajectes.
  */

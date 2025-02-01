@@ -14,7 +14,7 @@ class VehicleIDTest {
 
     @BeforeAll
     static void initAll() {
-        System.out.println("Iniciant els tests per a la classe VehicleID.");
+        System.out.println("INICIALIZANDO VEHICLEID TESTS");
     }
 
     @BeforeEach
@@ -74,7 +74,8 @@ class VehicleIDTest {
 
     @AfterAll
     static void tearDownAll() {
-        System.out.println("Tots els tests han finalitzat.");
+        System.out.println("FINALIZANDO VEHICLEID TESTS");
+        System.out.println();
     }
 
 }

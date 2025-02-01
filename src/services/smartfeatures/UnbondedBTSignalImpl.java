@@ -2,7 +2,6 @@ package services.smartfeatures;
 
 import java.net.ConnectException;
 import java.util.concurrent.TimeUnit;
-
 import data.StationID;
 import micromobility.JourneyRealizeHandler;
 

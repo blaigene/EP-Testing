@@ -20,7 +20,7 @@ class PaymentTest {
 
     @BeforeAll
     static void setupAll() {
-        System.out.println("Iniciant tests del package Payment...");
+        System.out.println("INICIALIZANDO PAYMENT TESTS");
     }
 
     @BeforeEach
@@ -89,7 +89,7 @@ class PaymentTest {
 
     @AfterAll
     static void tearDownAll() {
-        // Executat després de tots els tests
-        System.out.println("Finalitzats els tests de Payment.");
+        System.out.println("FINALIZANDO PAYMENT TESTS");
+        System.out.println();
     }
 }

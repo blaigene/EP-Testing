@@ -19,7 +19,7 @@ public class PMVehicleTest {
 
     @BeforeAll
     static void setupBeforeAll() {
-        System.out.println("Iniciant proves per a la classe PMVehicle...");
+        System.out.println("INICIALIZANDO PMVEHICLE TESTS");
         // Crear un QR Code simulador per utilitzar a les proves
         sampleQrCode = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
     }
@@ -89,8 +89,8 @@ public class PMVehicleTest {
     }
 
     @AfterAll
-    static void cleanupAfterAll() {
-        System.out.println("Finalitzant proves per a PMVehicle...");
-        sampleQrCode = null;
+    static void tearDownAll() {
+        System.out.println("FINALIZANDO PMVEHICLE TESTS");
+        System.out.println();
     }
 }

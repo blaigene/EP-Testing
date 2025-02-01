@@ -14,7 +14,7 @@ class UserAccountTest {
 
     @BeforeAll
     static void initAll() {
-        System.out.println("Iniciant els tests per a la classe UserAccount.");
+        System.out.println("INICIALIZANDO USERACCOUNT TESTS");
     }
 
     @BeforeEach
@@ -75,7 +75,8 @@ class UserAccountTest {
 
     @AfterAll
     static void tearDownAll() {
-        System.out.println("Tots els tests han finalitzat.");
+        System.out.println("FINALIZANDO USERACCOUNT TESTS");
+        System.out.println();
     }
 
 }

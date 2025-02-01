@@ -6,7 +6,6 @@ import micromobility.payment.Wallet;
 import micromobility.payment.WalletPayment;
 import services.exceptions.*;
 import micromobility.JourneyService;
-
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;

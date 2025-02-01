@@ -12,7 +12,7 @@ class GeographicPointTest {
 
     @BeforeAll
     static void initAll() {
-        System.out.println("Iniciant els tests per a la classe GeographicPoint.");
+        System.out.println("INICIALIZANDO GEOGRAPHICPOINT TESTS");
     }
 
     @BeforeEach
@@ -61,8 +61,9 @@ class GeographicPointTest {
 
     @AfterAll
     static void tearDownAll() {
-    System.out.println("Tots els tests han finalitzat.");
-}
+        System.out.println("FINALIZANDO GEOGRAPHICPOINT TESTS");
+        System.out.println();
+    }
 
 }
 

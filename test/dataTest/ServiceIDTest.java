@@ -13,7 +13,7 @@ class ServiceIDTest {
 
     @BeforeAll
     static void initAll() {
-        System.out.println("Iniciant els tests per a la classe ServiceID.");
+        System.out.println("INICIALIZANDO SERVICEID TESTS");
     }
 
     @BeforeEach
@@ -66,14 +66,10 @@ class ServiceIDTest {
         assertEquals(expected, id1.toString());
     }
 
-    @AfterEach
-    void tearDown() {
-        System.out.println("Test finalitzat. Netejant el context...");
-    }
-
     @AfterAll
     static void tearDownAll() {
-        System.out.println("Tots els tests han finalitzat.");
+        System.out.println("FINALIZANDO SERVICEID TESTS");
+        System.out.println();
     }
 
 }
