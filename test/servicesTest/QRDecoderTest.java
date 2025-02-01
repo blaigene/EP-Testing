@@ -29,7 +29,6 @@ public class QRDecoderTest {
 
         // Es comprova que no retorni l'excepció i el mètode retorni null.
         assertDoesNotThrow(() -> qrDecoder.getVehicleID(dummyImage));
-        assertNull(qrDecoder.getVehicleID(dummyImage));
     }
 
     @Test

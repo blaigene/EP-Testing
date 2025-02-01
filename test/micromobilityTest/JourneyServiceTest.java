@@ -28,7 +28,7 @@ public class JourneyServiceTest {
     @Test
     void testConstructorValid() {
         Assertions.assertNotNull(journeyService);
-        Assertions.assertEquals("SE123456", journeyService.getServiceID());
+        Assertions.assertEquals(new ServiceID("SE123456"), journeyService.getServiceID());
     }
 
     @Test
@@ -40,10 +40,11 @@ public class JourneyServiceTest {
 
     @Test
     void testGetters() {
-        Assertions.assertEquals("SE123456", journeyService.getServiceID());
+        Assertions.assertEquals(new ServiceID("SE123456"), journeyService.getServiceID());
         Assertions.assertEquals(0, journeyService.getDuration());
         journeyService.setDuration(60);
         journeyService.setDistance(10);
+        journeyService.setAvgSpeed();
         Assertions.assertEquals(10, journeyService.getDistance());
         Assertions.assertEquals(10, journeyService.getAvgSpeed());
         Assertions.assertNull(journeyService.getOriginPoint());

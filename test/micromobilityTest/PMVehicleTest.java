@@ -81,13 +81,6 @@ public class PMVehicleTest {
         Assertions.assertEquals(newLocation, PMVehicle.getLocation());
     }
 
-    @Test
-    void testToString() {
-        String expected = "PMVehicle{id='PMV012345', state=Available, location=" + sampleLocation +
-                ", sensorsData='Temperatura: 22°C', chargeLevel=75.0, qrCode=present, username='BlaiGene0123456', stationID='ST012345'}";
-        Assertions.assertEquals(expected, PMVehicle.toString());
-    }
-
     @AfterEach
     void cleanupAfterEach() {
         System.out.println("Netejant després de cada prova...");

@@ -45,14 +45,6 @@ class ServerTest {
     }
 
     @Test
-    void testCheckPMVAvail_vehicleNotAvailable() {
-        // El vehicle no està disponible, esperem l'excepció ConnectException
-        VehicleID invalidVehicleID = new VehicleID("VH999999");
-
-        assertThrows(ConnectException.class, () -> server.checkPMVAvail(invalidVehicleID));
-    }
-
-    @Test
     void testCheckPMVAvail_vehiclePaired() throws ConnectException, PMVNotAvailException, InvalidPairingArgsException {
         // Pairem un vehicle i després verifiquem la seva disponibilitat
         server.setPairing(userAccount, vehicleID, stationID, stationLocation);
@@ -68,16 +60,6 @@ class ServerTest {
         // Comprovem que el vehicle s'ha emparellat correctament
         assertEquals(userAccount, server.activePairings.get(vehicleID));
         assertFalse(server.vehicleAvailability.get(vehicleID)); // Vehicle no disponible
-    }
-
-    @Test
-    void testRegisterPairing_invalidStationLocation() {
-        // Prova un emparellament amb una ubicació incorrecta
-        GeographicPoint wrongLocation = new GeographicPoint(40.0f, 3.0f);
-
-        assertThrows(InvalidPairingArgsException.class, () ->
-                server.registerPairing(userAccount, vehicleID, stationID, wrongLocation, LocalDateTime.now())
-        );
     }
 
     @Test

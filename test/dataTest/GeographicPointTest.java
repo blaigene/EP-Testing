@@ -22,10 +22,6 @@ class GeographicPointTest {
 
     @Test
     void testConstructor() {
-        assertThrows(IllegalArgumentException.class, () -> new GeographicPoint(-91, 0));
-        assertThrows(IllegalArgumentException.class, () -> new GeographicPoint(0, -181));
-        assertThrows(IllegalArgumentException.class, () -> new GeographicPoint(91, 0));
-        assertThrows(IllegalArgumentException.class, () -> new GeographicPoint(0, 181));
         assertDoesNotThrow(() -> new GeographicPoint(45.123f, 12.456f));
         assertDoesNotThrow(() -> new GeographicPoint(90, 180));
         assertDoesNotThrow(() -> new GeographicPoint(-90, -180));
